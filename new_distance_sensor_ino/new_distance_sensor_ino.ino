@@ -22,7 +22,7 @@ int avgrange=10;//Quantity of values to average (sample size)
 
 #define HIGHEST_RANGE_NORMALIZER 30 //the error from highest range
 
-int sum,range,inches,currentAvg;
+int sum,range,cm,currentAvg;
 
 int highestValue = 0; //Stores the highest read value - normalize it to remove errors
 
@@ -44,10 +44,10 @@ void loop()
     if(range > highestValue) {
       highestValue = range;
       Serial.print("new highestValue:");
-      Serial.print(range);      
+      Serial.println(range);      
     }
     
-    //ignore if in highest value range
+    //ignore `if in highest value range
     if(isInHighestRange(range)) {
       currentAvg--;
       //don't add to sum
@@ -56,10 +56,11 @@ void loop()
       delay(10);
     }
   } 
-  inches = sum / currentAvg;
-  // PW
-  Serial.print(inches);
-  Serial.print("cm - ");
+  cm = sum / currentAvg;
+  if(cm > 0) {
+    Serial.print(cm);
+    Serial.print(" cm");
+  }
   
   // TX
 //  start = millis();
@@ -86,8 +87,8 @@ boolean isInHighestRange(int range) {
   boolean result = (range + HIGHEST_RANGE_NORMALIZER > highestValue);
   //debugging
   if(result) {
-    Serial.print("Just cleaned:");
-    Serial.println(range);
+    //Serial.print("Just cleaned:");
+    //Serial.println(range);
   }
   return result;
 }
