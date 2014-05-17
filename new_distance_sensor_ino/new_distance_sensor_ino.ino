@@ -44,7 +44,7 @@ void loop()
     if(range > highestValue) {
       highestValue = range;
       Serial.print("new highestValue:");
-      Serial.println(range);      
+      Serial.println(range);
     }
     
     //ignore `if in highest value range
