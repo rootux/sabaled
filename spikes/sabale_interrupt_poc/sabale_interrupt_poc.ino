@@ -21,47 +21,61 @@ const int led = LED_BUILTIN;  // the pin with a LED
 
 void setup(void) {
 	strip.begin();
+	for (int i = 0; i < strip.numPixels(); i++)
+		strip.setPixelColor(i, strip.Color(0, 0, 0));
 	strip.show();
 	pinMode(led, OUTPUT);
-	Timer3.initialize(10000);
-	Timer3.attachInterrupt(pulse); // blinkLED to run every 0.01 second
+	Timer3.initialize(100000);
+//	Timer3.attachInterrupt(pulse); // blinkLED to run every 0.01 second
 //	Timer3.attachInterrupt(colorPulse);
 	Serial.begin(9600);
 }
 
+
+#ifdef TEST_TRANSITION_STEP
+		if (current_color != dest_color) {
+			bool equal = transitionStep(current_color, dest_color, colorPulseTransitionStep, colorPulseTransitionStep);
+			if (equal) {
+				Serial.println("EQUAL");
+			}
+		}
+
+		for (int j = 0; j < strip.numPixels(); ++j) {
+			strip.setPixelColor(j, *current_color);
+		}
+
+		strip.show();
+#endif
 
 // The interrupt will blink the LED, and keep
 // track of how many times it has blinked.
 int ledState = LOW;
 volatile unsigned long blinkCount = 0; // use volatile for shared variables
 
-uint32_t source_color_value = strip.Color(10, 20, 0);
+uint32_t source_color_value = strip.Color(255, 0, 0);
 uint32_t *source_color = &source_color_value;
-uint32_t* current_color = source_color;
+uint32_t *current_color = source_color;
 uint32_t dest_color_value = strip.Color(0, 0, 255);
-uint32_t* dest_color = &dest_color_value;
+uint32_t *dest_color = &dest_color_value;
 bool isAtEnd = false;
 int colorPulseCurrentIndex = 0;
-int colorPulseTransitionStep = 5;
-int colorPulseRange = 10;
+int colorPulseTransitionStep = 10;
 
-bool didReachEnd(bool didGoForward, uint8_t source, uint8_t destination, int forwardStep, int backwardsStep);
 boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, int forwardStep, int backwardsStep);
 
 /* Color pulse
 */
 
-void colorPulse(void) {
-	uint32_t *tempColor = current_color;
-	int temp_index = colorPulseCurrentIndex;
-	while (temp_index < colorPulseCurrentIndex + colorPulseRange) {
-		isAtEnd = transitionStep(tempColor, dest_color, colorPulseTransitionStep, colorPulseTransitionStep);
-		strip.setPixelColor(temp_index, *tempColor);
-		temp_index++;
-	}
+int call_counter = 0;
 
-	colorPulseCurrentIndex++;
-        strip.show();
+bool firstRun = true;
+
+void colorPulse(void) {
+
+
+//	if ((uint32_t)*current_color == (uint32_t)*dest_color) {
+//		colorPulseCurrentIndex++;
+//	}
 }
 
 /* Pulse */
@@ -93,7 +107,7 @@ void pulse(void) {
 		temp_level = pulse_current_level - ((temp_index - pulse_index) * pulse_step_forward);
 	}
 
-	int lastBackwardDimIndex;
+	int lastBackwardDimIndex = 0;
 	// Only when we reach the maximum level (graceful startup) we start turning off
 	// or dimming the leds behind us
 	if (pulse_current_level == pulse_max) {
@@ -136,106 +150,136 @@ int pulseBackwardDim() {
 }
 
 
+uint8_t nextTransitionValue(uint8_t source, uint8_t destination, int forwardStep, int backwardsStep);
+
 /*
 	transitionStep
 	Moves from src_color to dst_color in steps defined by forwardStep and backwardsStep
 	*/
-
 boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, int forwardStep, int backwardsStep) {
-	const uint8_t INTERNAL_R_BIT = 0;
-	const uint8_t INTERNAL_G_BIT = 1;
-	const uint8_t INTERNAL_B_BIT = 2;
-
 	uint8_t r = (*src_color & RED_MASK) >> 16;
-	uint8_t g = ((*src_color & GREEN_MASK) >> 8);
+	uint8_t g = (*src_color & GREEN_MASK) >> 8;
 	uint8_t b = (*src_color & BLUE_MASK);
 
 	uint8_t rdest = (*dst_color & RED_MASK) >> 16;
-	uint8_t gdest = ((*dst_color & GREEN_MASK) >> 8);
+	uint8_t gdest = (*dst_color & GREEN_MASK) >> 8;
 	uint8_t bdest = (*dst_color & BLUE_MASK);
 
-	uint8_t colorGoneForward = B00000000;
-
-	if (rdest > r) {
-		r = r + forwardStep;
-		bitWrite(colorGoneForward, INTERNAL_R_BIT, 1);
-	}
-	else if (rdest < r) {
-		r = r - backwardsStep;
-	}
-
-	if (gdest > g) {
-		g = g + forwardStep;
-		bitWrite(colorGoneForward, INTERNAL_G_BIT, 1);
-	}
-	else if (gdest < g) {
-		g = g - backwardsStep;
-	}
-
-	if (bdest > b) {
-		b = b + forwardStep;
-		bitWrite(colorGoneForward, INTERNAL_B_BIT, 1);
-	}
-	else if (bdest < b) {
-		b = b - backwardsStep;
-	}
+	r = nextTransitionValue(r, rdest, forwardStep, backwardsStep);
+	g = nextTransitionValue(g, gdest, forwardStep, backwardsStep);
+	b = nextTransitionValue(b, bdest, forwardStep, backwardsStep);
 
 	*src_color = strip.Color(r, g, b);
 
-	bool redReachedEnd = didReachEnd(
-			bitRead(colorGoneForward, INTERNAL_R_BIT),
-			r,
-			rdest,
-			forwardStep,
-			backwardsStep);
+//	Serial.print("r = ");
+//	Serial.print(r);
+//	Serial.print("g = ");
+//	Serial.print(g);
+//	Serial.print("b = ");
+//	Serial.println(b);
 
-	bool greenReachedEnd = didReachEnd(
-			bitRead(colorGoneForward, INTERNAL_G_BIT),
-			g,
-			gdest,
-			forwardStep,
-			backwardsStep);
-
-	bool blueReachedEnd = didReachEnd(
-			bitRead(colorGoneForward, INTERNAL_B_BIT),
-			b,
-			bdest,
-			forwardStep,
-			backwardsStep);
-
-	return redReachedEnd && greenReachedEnd && blueReachedEnd;
+	return (r == rdest) && (g == gdest) && (b == bdest);
 }
 
-bool didReachEnd(bool didGoForward, uint8_t source, uint8_t destination, int forwardStep, int backwardsStep) {
-	bool reachedEnd = false;
-	uint8_t nextValue;
-	if (didGoForward) {
-		nextValue = source + forwardStep;
-		if (nextValue >= destination)
-			reachedEnd = true;
+uint8_t nextTransitionValue(uint8_t source, uint8_t destination, int forwardStep, int backwardsStep) {
+	int result;
+	if (source < destination) {
+		result = source + forwardStep;
+		if (result > destination) {
+			// went too far
+			result = destination;
+		}
+	} else if (source > destination) {
+		result = source - backwardsStep;
+		if (result < destination) {
+			// went too far
+			result = destination;
+		}
 	} else {
-		nextValue = source - backwardsStep;
-		if (nextValue <= destination)
-			reachedEnd = true;
+		result = destination;
 	}
 
-	return reachedEnd;
+	return (uint8_t) result;
 }
-
 
 // The main program will print the blink count
 // to the Arduino Serial Monitor
 void loop(void) {
-//	unsigned long blinkCopy;  // holds a copy of the blinkCount
-//
-//	// to read a variable which the interrupt code writes, we
-//	// must temporarily disable interrupts, to be sure it will
-//	// not change while we are reading.  To minimize the time
-//	// with interrupts off, just quickly make a copy, and then
-//	// use the copy while allowing the interrupt to keep working.
-//	noInterrupts();
-//	blinkCopy = blinkCount;
-//	interrupts();
-//
-//	delay(100);
+	if (firstRun) {
+		for (int i = 0; i < strip.numPixels(); ++i) {
+			strip.setPixelColor(i, *source_color);
+		}
+
+		firstRun = false;
+	}
+
+	int tempIndex = colorPulseCurrentIndex;
+	uint32_t tempColorValue = *source_color;
+	uint32_t *tempColor = &tempColorValue;
+	bool innerTransitionComplete = false;
+	while (!innerTransitionComplete && tempIndex >= 0) {
+		strip.setPixelColor(tempIndex, *tempColor);
+		tempIndex--;
+		innerTransitionComplete = transitionStep(tempColor, dest_color, colorPulseTransitionStep, colorPulseTransitionStep);
+	}
+
+	Serial.println(tempIndex);
+	innerTransitionComplete = false;
+	while (!innerTransitionComplete && tempIndex >= 0) {
+		strip.setPixelColor(tempIndex, *tempColor);
+		tempIndex--;
+		innerTransitionComplete = transitionStep(tempColor, source_color, colorPulseTransitionStep, colorPulseTransitionStep);
+	}
+
+	strip.show();
+	delay(50);
+
+	colorPulseCurrentIndex++;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
