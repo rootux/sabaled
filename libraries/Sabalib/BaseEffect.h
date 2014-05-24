@@ -2,14 +2,16 @@
 #define BASEEFFECT_H
 
 #include "Arduino.h"
-#include <Adafruit_NeoPixel.h>
+#include "Sabalib.h"
 
 class BaseEffect
 {
   public:
-    BaseEffect();
+    BaseEffect(Section* sections);
     ~BaseEffect();
-    virtual void tick(void);
+    void tick(void);
+  protected:
+  	Section* sections;
 };
 
 #endif // BASEEFFECT_H

@@ -1,7 +1,7 @@
 #include "BaseEffect.h"
 
-BaseEffect::BaseEffect() {
-	
+BaseEffect::BaseEffect(Section* sections){
+	this->sections = sections;
 }
 
 BaseEffect::~BaseEffect() {

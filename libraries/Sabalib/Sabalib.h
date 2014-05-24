@@ -8,6 +8,7 @@ class Section
 {
   public:
     Section(int startIndex, int endIndex, Adafruit_NeoPixel *strip);
+    Section();
     ~Section();
     void begin(void);
     void show(void);

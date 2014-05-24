@@ -1,5 +1,9 @@
 #include "Sabalib.h"
 
+Section::Section() {
+
+}
+
 Section::Section(int startIndex, int endIndex, Adafruit_NeoPixel* strip) {
 	this->strip = strip;
 }
