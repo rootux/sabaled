@@ -25,6 +25,7 @@ void setup(void) {
 	pinMode(led, OUTPUT);
 	Timer3.initialize(10000);
 	Timer3.attachInterrupt(pulse); // blinkLED to run every 0.01 second
+//	Timer3.attachInterrupt(colorPulse);
 	Serial.begin(9600);
 }
 
@@ -34,10 +35,34 @@ void setup(void) {
 int ledState = LOW;
 volatile unsigned long blinkCount = 0; // use volatile for shared variables
 
-/* Firework */
-void firework(void) {
-}
+uint32_t source_color_value = strip.Color(10, 20, 0);
+uint32_t *source_color = &source_color_value;
+uint32_t* current_color = source_color;
+uint32_t dest_color_value = strip.Color(0, 0, 255);
+uint32_t* dest_color = &dest_color_value;
+bool isAtEnd = false;
+int colorPulseCurrentIndex = 0;
+int colorPulseTransitionStep = 5;
+int colorPulseRange = 10;
 
+bool didReachEnd(bool didGoForward, uint8_t source, uint8_t destination, int forwardStep, int backwardsStep);
+boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, int forwardStep, int backwardsStep);
+
+/* Color pulse
+*/
+
+void colorPulse(void) {
+	uint32_t *tempColor = current_color;
+	int temp_index = colorPulseCurrentIndex;
+	while (temp_index < colorPulseCurrentIndex + colorPulseRange) {
+		isAtEnd = transitionStep(tempColor, dest_color, colorPulseTransitionStep, colorPulseTransitionStep);
+		strip.setPixelColor(temp_index, *tempColor);
+		temp_index++;
+	}
+
+	colorPulseCurrentIndex++;
+        strip.show();
+}
 
 /* Pulse */
 /*
@@ -46,13 +71,12 @@ void firework(void) {
   For reverse-pulse: step_backwrds must be a lot bigger (~x8) than forward step
 */
 int pulse_step_forward = 17;
+int pulse_step_backwrads = 17;
 int pulse_max = 255;
 int pulse_index = 0;
 int pulse_current_level = 0;
 
 void pulseBackwardDim(int temp_level, int temp_index);
-
-bool didReachEnd(float forwardFactor, float backwardsFactor, uint8_t r, uint8_t rdest);
 
 void pulse(void) {
 	if (pulse_current_level < pulse_max) {
@@ -100,12 +124,12 @@ void pulse(void) {
 */
 int pulseBackwardDim() {
 	int temp_index = pulse_index - 1;
-	int temp_level = pulse_current_level - ((pulse_index - temp_index) * pulse_step_forward);
+	int temp_level = pulse_current_level - ((pulse_index - temp_index) * pulse_step_backwrads);
 	// Backward leds shut down
 	while (temp_index >= 0 && temp_level >= 0) {
 		strip.setPixelColor(temp_index, strip.Color(temp_level, 0, 0));
 		temp_index--;
-		temp_level = pulse_current_level - ((pulse_index - temp_index) * pulse_step_forward);
+		temp_level = pulse_current_level - ((pulse_index - temp_index) * pulse_step_backwrads);
 	}
 
 	return temp_index;
@@ -114,19 +138,14 @@ int pulseBackwardDim() {
 
 /*
 	transitionStep
-	Moves from src_color to dst_color in steps defined by forwardFactor and backwardsFactor
-    forwardFactor: the factor in which colors are moved forward. For example, for a 1 step in a 255 range,
-    going from 1 to 255, forwardFactor is 0.00392
+	Moves from src_color to dst_color in steps defined by forwardStep and backwardsStep
+	*/
 
-    backwardsFactor: the __unnormalized__ factor by which colors are moved backwards. For example, for a 10
-    step in a 100 range, going from 100 to 0 backwardsFactor is 0.1
- */
-boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, float forwardFactor, float backwardsFactor) {
+boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, int forwardStep, int backwardsStep) {
 	const uint8_t INTERNAL_R_BIT = 0;
 	const uint8_t INTERNAL_G_BIT = 1;
 	const uint8_t INTERNAL_B_BIT = 2;
 
-	float normalizedBackwardsFactor = backwardsFactor * -1;
 	uint8_t r = (*src_color & RED_MASK) >> 16;
 	uint8_t g = ((*src_color & GREEN_MASK) >> 8);
 	uint8_t b = (*src_color & BLUE_MASK);
@@ -137,23 +156,29 @@ boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, float forwardFa
 
 	uint8_t colorGoneForward = B00000000;
 
-	if (rdest > r)
-		r = r * forwardFactor;
-	bitWrite(colorGoneForward, INTERNAL_R_BIT, 1);
-	else if (rdest < r)
-		r = r * normalizedBackwardsFactor;
+	if (rdest > r) {
+		r = r + forwardStep;
+		bitWrite(colorGoneForward, INTERNAL_R_BIT, 1);
+	}
+	else if (rdest < r) {
+		r = r - backwardsStep;
+	}
 
-	if (gdest > g)
-		g = g * forwardFactor;
-	bitWrite(colorGoneForward, INTERNAL_G_BIT, 1);
-	else if (gdest < g)
-		g = g * normalizedBackwardsFactor;
+	if (gdest > g) {
+		g = g + forwardStep;
+		bitWrite(colorGoneForward, INTERNAL_G_BIT, 1);
+	}
+	else if (gdest < g) {
+		g = g - backwardsStep;
+	}
 
-	if (bdest > b)
-		b = b * forwardFactor;
-	bitWrite(colorGoneForward, INTERNAL_B_BIT, 1);
-	else if (bdest < b)
-		b = b * backwardsFactor;
+	if (bdest > b) {
+		b = b + forwardStep;
+		bitWrite(colorGoneForward, INTERNAL_B_BIT, 1);
+	}
+	else if (bdest < b) {
+		b = b - backwardsStep;
+	}
 
 	*src_color = strip.Color(r, g, b);
 
@@ -161,35 +186,35 @@ boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, float forwardFa
 			bitRead(colorGoneForward, INTERNAL_R_BIT),
 			r,
 			rdest,
-			forwardFactor,
-			backwardsFactor);
+			forwardStep,
+			backwardsStep);
 
 	bool greenReachedEnd = didReachEnd(
 			bitRead(colorGoneForward, INTERNAL_G_BIT),
 			g,
 			gdest,
-			forwardFactor,
-			backwardsFactor);
+			forwardStep,
+			backwardsStep);
 
 	bool blueReachedEnd = didReachEnd(
 			bitRead(colorGoneForward, INTERNAL_B_BIT),
 			b,
 			bdest,
-			forwardFactor,
-			backwardsFactor);
+			forwardStep,
+			backwardsStep);
 
 	return redReachedEnd && greenReachedEnd && blueReachedEnd;
 }
 
-bool didReachEnd(bool didGoForward, uint8_t source, uint8_t destination, float forwardFactor, float backwardsFactor) {
+bool didReachEnd(bool didGoForward, uint8_t source, uint8_t destination, int forwardStep, int backwardsStep) {
 	bool reachedEnd = false;
 	uint8_t nextValue;
 	if (didGoForward) {
-		nextValue = source * forwardFactor;
+		nextValue = source + forwardStep;
 		if (nextValue >= destination)
 			reachedEnd = true;
 	} else {
-		nextValue = source * backwardsFactor;
+		nextValue = source - backwardsStep;
 		if (nextValue <= destination)
 			reachedEnd = true;
 	}
