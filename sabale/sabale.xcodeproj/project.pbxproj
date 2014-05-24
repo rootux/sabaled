@@ -1,0 +1,82 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		C1AFB5D323D2D65A1B033F10 /* sabale_interrupt_poc.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = sabale_interrupt_poc.ino; path = ../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino; sourceTree = "<group>"; };
+		C1AFB70426AF1B798075036C /* justasec.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = justasec.ino; path = ../spikes/justasec/justasec.ino; sourceTree = "<group>"; };
+		C1AFBD3EE62CACA932407974 /* bitwise_transition.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; path = bitwise_transition.ino; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		C1AFB6F9143CC458252C0532 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C1AFBDFC25265BD2DBFADA72 = {
+			isa = PBXGroup;
+			children = (
+				C1AFB6F9143CC458252C0532 /* Products */,
+				C1AFB5D323D2D65A1B033F10 /* sabale_interrupt_poc.ino */,
+				C1AFB70426AF1B798075036C /* justasec.ino */,
+				C1AFBD3EE62CACA932407974 /* bitwise_transition.ino */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		C1AFBB8372D6EADA6F86A62A /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C1AFB6A44399D3B4DAE73BBC /* Build configuration list for PBXProject "sabale" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C1AFBDFC25265BD2DBFADA72;
+			productRefGroup = C1AFB6F9143CC458252C0532 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		C1AFBC18376D27BF79B30EEF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		C1AFBDBED0E4C47617FF35BB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C1AFB6A44399D3B4DAE73BBC /* Build configuration list for PBXProject "sabale" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1AFBDBED0E4C47617FF35BB /* Debug */,
+				C1AFBC18376D27BF79B30EEF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C1AFBB8372D6EADA6F86A62A /* Project object */;
+}

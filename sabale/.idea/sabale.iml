@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="CIDR_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$/../spikes/justasec/justasec.ino">
+      <sourceFolder url="file://$MODULE_DIR$/../spikes/justasec/justasec.ino" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino">
+      <sourceFolder url="file://$MODULE_DIR$/../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
+
