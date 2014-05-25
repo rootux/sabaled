@@ -31,7 +31,7 @@ unsigned int sonars[SONAR_NUM];     // Where the ping distances are stored.
 unsigned int buttons[BUTTONS_NUM];  // Holds the buttons states
 uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
 
-volatile boolean shouldUpdateEvent = false;
+volatile int activeEffect = 0;
 
 NewPing sonar[SONAR_NUM] = {     // Sensor object array.
   NewPing(10, 11, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
@@ -100,66 +100,66 @@ void tick() {
 }
 
 void tickActiveProgram(void) {
-    // reverse pulse effect
-    // only heart pulse effect
-    // pulse effect pink to purple
-    pulseEffect->tick();
+  switch(activeEffect) {
+    //BTN_REVERSE_PULSE_PIN
+    case 0:
+      Serial.println("Reverse Pulse");
+      break;
+    //BTN_ONLY_HEART_PIN 
+    case 1:
+      Serial.println("Only Heart");
+      break;
+    //BTN_PULSE_PIN
+    case 2:
+      Serial.println("Pulse");
+      pulseEffect->tick();
+      break;
+    //BTN_FIREWORKS_PIN
+    case 3:
+      Serial.println("Fireworks");
+      break;
+     //BTN_ELECTIC_SHOCK_PIN
+    case 4:
+      Serial.println("Electric Shock");
+      break;
+      //BTN_ELECTRIC_SPARKS_PIN
+    case 5:
+      Serial.println("Electric Sparks");
+      break;
+      //BTN_OVERRIDER_PIN
+    case 6:
+      Serial.println("Overrider");
+      break;
+  }
 }
 
 void loop() {
-  readFromButtons();
+  updateEffectByButtons();
   loopSonars();
 }
 
 
 /* Hack - Buttons pins should be ordinal */
-void readFromButtons() {
+void updateEffectByButtons() {
   //Remember that there is also on/off button  
   for(int i=0; i<BUTTONS_NUM;i++) {
     int newState = digitalRead(BTN_A_PIN + i);
     if (buttons[i] == newState) 
       continue;
       
+    buttons[i] = newState;
     // the button state has changed!
     if (newState == LOW) {                // check if the button is pressed
       Serial.println("Button just pressed");
-      switch(i) :
-        //BTN_REVERSE_PULSE_PIN
-        case 0:
-          Serial.println("Reverse Pulse");
-          break;
-        //BTN_ONLY_HEART_PIN 
-        case 1:
-          Serial.println("Only Heart");
-          break;
-        //BTN_PULSE_PIN
-        case 2:
-          Serial.println("Pulse");
-          break;
-        //BTN_FIREWORKS_PIN
-        case 3:
-          Serial.println("Fireworks");
-          break;
-         //BTN_ELECTIC_SHOCK_PIN
-        case 4:
-          Serial.println("Electric Shock");
-          break;
-          //BTN_ELECTRIC_SPARKS_PIN
-        case 5:
-          Serial.println("Electric Sparks");
-          break;
-          //BTN_OVERRIDER_PIN
-        case 6:
-          Serial.println("Overrider");
-          break;
+      noInterrupts();
+      activeEffect = i;
+      interrupts();
+      break;
     } else {
       Serial.println("Button just released");
     }
   }
 
-  buttonState = val;                 // save the new state in our variable
-
-  }
 }
 
 void loopSonars() {
@@ -189,3 +189,4 @@ void oneSensorCycle() { // Sensor ping cycle complete, do something with the res
   }
   Serial.println();
 }
+
