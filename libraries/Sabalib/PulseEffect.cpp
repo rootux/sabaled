@@ -1,6 +1,12 @@
 #include "PulseEffect.h"
+#include "Arduino.h"
 
 PulseEffect::PulseEffect(Section *sections) : BaseEffect(sections) {
+	sections->strip->begin();
+	sections->strip->show();
+
+	sections->strip->setPixelColor(2, sections->strip->Color(255, 0, 0));
+	sections->strip->show();
 	this->pulse_step_forward = 10;
 	this->pulse_step_backwrads = 10;
 	this->pulse_max = 200;
@@ -13,6 +19,7 @@ PulseEffect::~PulseEffect() {
 }
 
 void PulseEffect::tick(void) {
+
 	Adafruit_NeoPixel *strip = sections->strip;
 
 	if (pulse_current_level < pulse_max) {

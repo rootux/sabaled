@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		C1AFB2A54540FFE453428832 /* ColorPulseEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ColorPulseEffect.cpp; path = ../libraries/Sabalib/ColorPulseEffect.cpp; sourceTree = "<group>"; };
 		C1AFB2BDD27AB0693DF3F366 /* PulseEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PulseEffect.cpp; path = ../libraries/Sabalib/PulseEffect.cpp; sourceTree = "<group>"; };
 		C1AFB4255E13533E5F0A31DF /* BaseEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseEffect.h; path = ../libraries/Sabalib/BaseEffect.h; sourceTree = "<group>"; };
 		C1AFB6B791A518ADF5448BB2 /* sabale_interrupt_poc.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = sabale_interrupt_poc.ino; path = ../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino; sourceTree = "<group>"; };
@@ -14,6 +15,7 @@
 		C1AFB90E1837182C19D059C9 /* PulseEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PulseEffect.h; path = ../libraries/Sabalib/PulseEffect.h; sourceTree = "<group>"; };
 		C1AFBAAF14E411BDA22AA28F /* sabaled.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = sabaled.ino; path = ../sabaled/sabaled.ino; sourceTree = "<group>"; };
 		C1AFBC6B190A851EB1BBCD70 /* Sabalib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sabalib.h; path = ../libraries/Sabalib/Sabalib.h; sourceTree = "<group>"; };
+		C1AFBCA7A86D867C9EFD3B18 /* ColorPulseEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorPulseEffect.h; path = ../libraries/Sabalib/ColorPulseEffect.h; sourceTree = "<group>"; };
 		C1AFBFC722C3E9718BA6F326 /* Sabalib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sabalib.cpp; path = ../libraries/Sabalib/Sabalib.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -43,6 +45,8 @@
 				C1AFB4255E13533E5F0A31DF /* BaseEffect.h */,
 				C1AFB2BDD27AB0693DF3F366 /* PulseEffect.cpp */,
 				C1AFB8E11F82FA959BD977D5 /* BaseEffect.cpp */,
+				C1AFB2A54540FFE453428832 /* ColorPulseEffect.cpp */,
+				C1AFBCA7A86D867C9EFD3B18 /* ColorPulseEffect.h */,
 			);
 			name = Sabalib;
 			sourceTree = "<group>";

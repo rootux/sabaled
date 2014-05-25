@@ -7,6 +7,12 @@
     <content url="file://$MODULE_DIR$/../libraries/Sabalib/BaseEffect.h">
       <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/BaseEffect.h" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/ColorPulseEffect.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/ColorPulseEffect.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/ColorPulseEffect.h">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/ColorPulseEffect.h" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../libraries/Sabalib/PulseEffect.cpp">
       <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/PulseEffect.cpp" isTestSource="false" />
     </content>

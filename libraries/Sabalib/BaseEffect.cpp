@@ -1,6 +1,6 @@
 #include "BaseEffect.h"
 
-BaseEffect::BaseEffect(Section* sections){
+BaseEffect::BaseEffect(Section *sections) {
 	this->sections = sections;
 }
 
