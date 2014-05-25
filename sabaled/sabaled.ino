@@ -2,6 +2,7 @@
 #include <PulseEffect.h>
 #include <Sabalib.h>
 #include <TimerThree.h>
+#include <NewPing.h>
 
 #define RIGHT_TORSO_HAND_STICK_PIN 3
 #define CHEST_HEAD_BEARD_PIN 4
@@ -10,15 +11,37 @@
 #define RIGHT_LEG_PIN 7
 #define HEART_PIN 8
 
+#define SONAR_NUM 2 //number of sonars
+#define MAX_DISTANCE 250 // Maximum distance (in cm) to ping.
+#define PING_INTERVAL 100 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
+
+unsigned long pingTimer[SONAR_NUM]; // Holds the times when the next ping should happen for each sensor.
+unsigned int sonars[SONAR_NUM];     // Where the ping distances are stored.
+uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
+
+NewPing sonar[SONAR_NUM] = {     // Sensor object array.
+  NewPing(10, 11, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
+  NewPing(12, 13, MAX_DISTANCE)
+};
+
 Section sections[13];
 Adafruit_NeoPixel* strips[6];
 PulseEffect* pulseEffect;
 
 void setup() {
   Serial.begin(9600);  
+  initSonars();
   initSections();
   Timer3.initialize(10000); // blinkLED to run every 0.01 second
   Timer3.attachInterrupt(tick); 
+}
+
+void initSonars(void) {
+  // First ping starts at 75ms, gives time for the Arduino to chill before starting.
+  pingTimer[0] = millis() + 75;
+  for (uint8_t i = 1; i < SONAR_NUM; i++) {// Set the starting time for each sensor.
+    pingTimer[i] = pingTimer[i - 1] + PING_INTERVAL;
+  }
 }
 
 void initSections(void) {
@@ -54,6 +77,8 @@ void initSections(void) {
   sections[12] = Section(0, 239, strips[5]);
   
   pulseEffect = new PulseEffect(sections);
+  
+  
 }
 
 void tick() {
@@ -68,5 +93,33 @@ void tickActiveProgram(void) {
 }
 
 void loop() {
-  
+  loopSonars();
+}
+
+void loopSonars() {
+  for (uint8_t i = 0; i < SONAR_NUM; i++) { // Loop through all the sensors.
+    if (millis() >= pingTimer[i]) {         // Is it this sensor's time to ping?
+      pingTimer[i] += PING_INTERVAL * SONAR_NUM;  // Set next time this sensor will be pinged.
+      if (i == 0 && currentSensor == SONAR_NUM - 1) oneSensorCycle(); // Sensor ping cycle complete, do something with the results.
+      sonar[currentSensor].timer_stop();          // Make sure previous timer is canceled before starting a new ping (insurance).
+      currentSensor = i;                          // Sensor being accessed.
+      sonars[currentSensor] = 0;                      // Make distance zero in case there's no ping echo for this sensor.
+      sonar[currentSensor].ping_timer(echoCheck); // Do the ping (processing continues, interrupt will call echoCheck to look for echo).
+    }
+  }
+}
+
+void echoCheck() { // If ping received, set the sensor distance to array.
+  if (sonar[currentSensor].check_timer())
+    sonars[currentSensor] = sonar[currentSensor].ping_result / US_ROUNDTRIP_CM;
+}
+
+void oneSensorCycle() { // Sensor ping cycle complete, do something with the results.
+  for (uint8_t i = 0; i < SONAR_NUM; i++) {
+    Serial.print(i);
+    Serial.print("=");
+    Serial.print(sonars[i]);
+    Serial.print("cm ");
+  }
+  Serial.println();
 }
