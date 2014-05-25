@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="CIDR_MODULE" version="4">
   <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/BaseEffect.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/BaseEffect.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/BaseEffect.h">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/BaseEffect.h" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/PulseEffect.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/PulseEffect.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/PulseEffect.h">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/PulseEffect.h" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/Sabalib.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/Sabalib.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/Sabalib.h">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/Sabalib.h" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$" />
-    <content url="file://$MODULE_DIR$/../spikes/justasec/justasec.ino">
-      <sourceFolder url="file://$MODULE_DIR$/../spikes/justasec/justasec.ino" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../sabaled/sabaled.ino">
+      <sourceFolder url="file://$MODULE_DIR$/../sabaled/sabaled.ino" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino">
       <sourceFolder url="file://$MODULE_DIR$/../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino" isTestSource="false" />

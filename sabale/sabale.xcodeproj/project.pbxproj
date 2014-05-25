@@ -7,26 +7,68 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		C1AFB5D323D2D65A1B033F10 /* sabale_interrupt_poc.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = sabale_interrupt_poc.ino; path = ../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino; sourceTree = "<group>"; };
-		C1AFB70426AF1B798075036C /* justasec.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = justasec.ino; path = ../spikes/justasec/justasec.ino; sourceTree = "<group>"; };
-		C1AFBD3EE62CACA932407974 /* bitwise_transition.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; path = bitwise_transition.ino; sourceTree = "<group>"; };
+		C1AFB2BDD27AB0693DF3F366 /* PulseEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PulseEffect.cpp; path = ../libraries/Sabalib/PulseEffect.cpp; sourceTree = "<group>"; };
+		C1AFB4255E13533E5F0A31DF /* BaseEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseEffect.h; path = ../libraries/Sabalib/BaseEffect.h; sourceTree = "<group>"; };
+		C1AFB6B791A518ADF5448BB2 /* sabale_interrupt_poc.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = sabale_interrupt_poc.ino; path = ../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino; sourceTree = "<group>"; };
+		C1AFB8E11F82FA959BD977D5 /* BaseEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BaseEffect.cpp; path = ../libraries/Sabalib/BaseEffect.cpp; sourceTree = "<group>"; };
+		C1AFB90E1837182C19D059C9 /* PulseEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PulseEffect.h; path = ../libraries/Sabalib/PulseEffect.h; sourceTree = "<group>"; };
+		C1AFBAAF14E411BDA22AA28F /* sabaled.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = sabaled.ino; path = ../sabaled/sabaled.ino; sourceTree = "<group>"; };
+		C1AFBC6B190A851EB1BBCD70 /* Sabalib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sabalib.h; path = ../libraries/Sabalib/Sabalib.h; sourceTree = "<group>"; };
+		C1AFBFC722C3E9718BA6F326 /* Sabalib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sabalib.cpp; path = ../libraries/Sabalib/Sabalib.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		C1AFB6F9143CC458252C0532 /* Products */ = {
+		C1AFB40D489C77D45A9FA34C /* sabaled */ = {
 			isa = PBXGroup;
 			children = (
+				C1AFBAAF14E411BDA22AA28F /* sabaled.ino */,
 			);
-			name = Products;
+			name = sabaled;
+			sourceTree = "<group>";
+		};
+		C1AFB951DDA9F82D83296ED1 /* libraries */ = {
+			isa = PBXGroup;
+			children = (
+				C1AFB9D67E4C81B40DCA789F /* Sabalib */,
+			);
+			name = libraries;
+			sourceTree = "<group>";
+		};
+		C1AFB9D67E4C81B40DCA789F /* Sabalib */ = {
+			isa = PBXGroup;
+			children = (
+				C1AFB90E1837182C19D059C9 /* PulseEffect.h */,
+				C1AFBFC722C3E9718BA6F326 /* Sabalib.cpp */,
+				C1AFBC6B190A851EB1BBCD70 /* Sabalib.h */,
+				C1AFB4255E13533E5F0A31DF /* BaseEffect.h */,
+				C1AFB2BDD27AB0693DF3F366 /* PulseEffect.cpp */,
+				C1AFB8E11F82FA959BD977D5 /* BaseEffect.cpp */,
+			);
+			name = Sabalib;
+			sourceTree = "<group>";
+		};
+		C1AFBC4F35B36728C8E764EE /* sabale_interrupt_poc */ = {
+			isa = PBXGroup;
+			children = (
+				C1AFB6B791A518ADF5448BB2 /* sabale_interrupt_poc.ino */,
+			);
+			name = sabale_interrupt_poc;
+			sourceTree = "<group>";
+		};
+		C1AFBDD36867840DBBB343F9 /* spikes */ = {
+			isa = PBXGroup;
+			children = (
+				C1AFBC4F35B36728C8E764EE /* sabale_interrupt_poc */,
+			);
+			name = spikes;
 			sourceTree = "<group>";
 		};
 		C1AFBDFC25265BD2DBFADA72 = {
 			isa = PBXGroup;
 			children = (
-				C1AFB6F9143CC458252C0532 /* Products */,
-				C1AFB5D323D2D65A1B033F10 /* sabale_interrupt_poc.ino */,
-				C1AFB70426AF1B798075036C /* justasec.ino */,
-				C1AFBD3EE62CACA932407974 /* bitwise_transition.ino */,
+				C1AFB951DDA9F82D83296ED1 /* libraries */,
+				C1AFBDD36867840DBBB343F9 /* spikes */,
+				C1AFB40D489C77D45A9FA34C /* sabaled */,
 			);
 			sourceTree = "<group>";
 		};
@@ -43,7 +85,6 @@
 				en,
 			);
 			mainGroup = C1AFBDFC25265BD2DBFADA72;
-			productRefGroup = C1AFB6F9143CC458252C0532 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
