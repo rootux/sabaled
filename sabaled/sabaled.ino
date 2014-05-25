@@ -78,21 +78,23 @@ void initSections(void) {
   sections[8] = Section(0, 49, strips[2]);
   sections[9] = Section(50, 99, strips[2]);
 
-  //RIGHT LEG
-  strips[3] = new Adafruit_NeoPixel(50, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
-  sections[10] = Section(0, 49, strips[3]);
-  
-  //LEFT LEG
-  strips[4] = new Adafruit_NeoPixel(50, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
-  sections[11] = Section(0, 49, strips[4]);
-  
-  //HEART
-  strips[5] = new Adafruit_NeoPixel(240, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
-  sections[12] = Section(0, 239, strips[5]);
-  
-  pulseEffect = new PulseEffect(sections);
-  
-  
+	//RIGHT LEG
+	strips[3] = new Adafruit_NeoPixel(50, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
+	sections[10] = Section(0, 49, strips[3]);
+
+	//LEFT LEG
+	strips[4] = new Adafruit_NeoPixel(50, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
+	sections[11] = Section(0, 49, strips[4]);
+
+	//HEART
+	strips[5] = new Adafruit_NeoPixel(240, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
+	sections[12] = Section(0, 239, strips[5]);
+
+	// For now, i pass in the section that i work with
+	int pin = 6;
+	Adafruit_NeoPixel *testStrip = new Adafruit_NeoPixel(240, 6, NEO_GRB + NEO_KHZ800);
+	Section *testSection = new Section(0, 240, testStrip);
+	pulseEffect = new PulseEffect(sections);
 }
 
 void tick() {

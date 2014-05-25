@@ -1,4 +1,4 @@
-#include <TimerThree.h>
+#include <TimerOne.h>
 #include <Adafruit_NeoPixel.h>
 
 #define PIN 6
@@ -25,57 +25,90 @@ void setup(void) {
 		strip.setPixelColor(i, strip.Color(0, 0, 0));
 	strip.show();
 	pinMode(led, OUTPUT);
-	Timer3.initialize(100000);
+        Timer1.initialize(15000);
+//	Timer3.initialize(15000);
+        Timer1.attachInterrupt(pulse);
 //	Timer3.attachInterrupt(pulse); // blinkLED to run every 0.01 second
 //	Timer3.attachInterrupt(colorPulse);
+//	Timer3.attachInterrupt(explosion);
 	Serial.begin(9600);
 }
 
+bool firstRun = true;
 
-#ifdef TEST_TRANSITION_STEP
-		if (current_color != dest_color) {
-			bool equal = transitionStep(current_color, dest_color, colorPulseTransitionStep, colorPulseTransitionStep);
-			if (equal) {
-				Serial.println("EQUAL");
-			}
+uint32_t explosionSourceColorValue = strip.Color(0, 0, 100);
+uint32_t *explosionSourceColor = &explosionSourceColorValue;
+uint32_t explosionDesintaionColorValue = strip.Color(255, 0, 50);
+uint32_t *explosionDestinationColor = &explosionDesintaionColorValue;
+int explosionStartIndex = 100;
+
+void explosion(void) {
+	if (firstRun) {
+		for (int i = 0; i < strip.numPixels(); ++i) {
+			strip.setPixelColor(i, *explosionSourceColor);
 		}
 
-		for (int j = 0; j < strip.numPixels(); ++j) {
-			strip.setPixelColor(j, *current_color);
-		}
+		firstRun = false;
+	}
+}
 
-		strip.show();
-#endif
 
-// The interrupt will blink the LED, and keep
-// track of how many times it has blinked.
-int ledState = LOW;
-volatile unsigned long blinkCount = 0; // use volatile for shared variables
-
-uint32_t source_color_value = strip.Color(255, 0, 0);
+uint32_t source_color_value = strip.Color(0, 0, 100  );
 uint32_t *source_color = &source_color_value;
-uint32_t *current_color = source_color;
-uint32_t dest_color_value = strip.Color(0, 0, 255);
+uint32_t dest_color_value = strip.Color(255, 0, 0);
 uint32_t *dest_color = &dest_color_value;
-bool isAtEnd = false;
 int colorPulseCurrentIndex = 0;
-int colorPulseTransitionStep = 10;
+int colorPulseTransitionStep = 5;
 
 boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, int forwardStep, int backwardsStep);
 
-/* Color pulse
-*/
+/* Color pulse */
 
-int call_counter = 0;
 
-bool firstRun = true;
 
 void colorPulse(void) {
+	if (firstRun) {
+		for (int i = 0; i < strip.numPixels(); ++i) {
+			strip.setPixelColor(i, *source_color);
+		}
 
+		firstRun = false;
+	}
 
-//	if ((uint32_t)*current_color == (uint32_t)*dest_color) {
-//		colorPulseCurrentIndex++;
-//	}
+	// We begin the transition from the current index going backwards
+	// because the source color is where we come from and destination color
+	// is where we're heading. To see the transitin come out smoothly on the
+	// strip we should start from the source, and change the color to be the
+	// most distinct (equal to destination color) at the farthest point
+	int tempIndex = colorPulseCurrentIndex;
+	uint32_t tempColorValue = *source_color;
+	uint32_t *tempColor = &tempColorValue;
+	bool innerTransitionComplete = false;
+	while (!innerTransitionComplete && tempIndex >= 0) {
+		strip.setPixelColor(tempIndex, *tempColor);
+		tempIndex--;
+		innerTransitionComplete = transitionStep(tempColor, dest_color, 40, 40);
+	}
+
+	// We have now reached the furthest point, i.e tempColor is the desination color.
+	// Now we want to gradually go back to the original color (source_color). The
+	// following code does just that
+	innerTransitionComplete = false;
+	while (!innerTransitionComplete && tempIndex >= 0) {
+		strip.setPixelColor(tempIndex, *tempColor);
+		tempIndex--;
+		innerTransitionComplete = transitionStep(tempColor, source_color, colorPulseTransitionStep, colorPulseTransitionStep);
+	}
+        strip.setPixelColor(tempIndex, *tempColor);
+
+	strip.show();
+
+	colorPulseCurrentIndex++;
+
+	// Touched the end of the strip - go back to the start
+	if (tempIndex == strip.numPixels()) {
+		colorPulseCurrentIndex = 0;
+	}
 }
 
 /* Pulse */
@@ -84,8 +117,8 @@ void colorPulse(void) {
   For firework effect: forward step must be a lot bigger (~x8) than backwards step
   For reverse-pulse: step_backwrds must be a lot bigger (~x8) than forward step
 */
-int pulse_step_forward = 17;
-int pulse_step_backwrads = 17;
+int pulse_step_forward = 10;
+int pulse_step_backwrads = 5;
 int pulse_max = 255;
 int pulse_index = 0;
 int pulse_current_level = 0;
@@ -110,7 +143,7 @@ void pulse(void) {
 	int lastBackwardDimIndex = 0;
 	// Only when we reach the maximum level (graceful startup) we start turning off
 	// or dimming the leds behind us
-	if (pulse_current_level == pulse_max) {
+	if (pulse_current_level >= pulse_max) {
 		lastBackwardDimIndex = pulseBackwardDim();
 	}
 
@@ -118,7 +151,7 @@ void pulse(void) {
 
 	// Only when we reach max level, start advancing.
 	// This creates the effect of the pulse taking shape at the beginning of the strip instead of starting in the middle of it.
-	if (pulse_current_level == pulse_max) {
+	if (pulse_current_level >= pulse_max) {
 		pulse_index++;
 	}
 
@@ -141,7 +174,7 @@ int pulseBackwardDim() {
 	int temp_level = pulse_current_level - ((pulse_index - temp_index) * pulse_step_backwrads);
 	// Backward leds shut down
 	while (temp_index >= 0 && temp_level >= 0) {
-		strip.setPixelColor(temp_index, strip.Color(temp_level, 0, 0));
+  		strip.setPixelColor(temp_index, strip.Color(temp_level, 0, 0));
 		temp_index--;
 		temp_level = pulse_current_level - ((pulse_index - temp_index) * pulse_step_backwrads);
 	}
@@ -205,37 +238,13 @@ uint8_t nextTransitionValue(uint8_t source, uint8_t destination, int forwardStep
 // The main program will print the blink count
 // to the Arduino Serial Monitor
 void loop(void) {
-	if (firstRun) {
-		for (int i = 0; i < strip.numPixels(); ++i) {
-			strip.setPixelColor(i, *source_color);
-		}
-
-		firstRun = false;
-	}
-
-	int tempIndex = colorPulseCurrentIndex;
-	uint32_t tempColorValue = *source_color;
-	uint32_t *tempColor = &tempColorValue;
-	bool innerTransitionComplete = false;
-	while (!innerTransitionComplete && tempIndex >= 0) {
-		strip.setPixelColor(tempIndex, *tempColor);
-		tempIndex--;
-		innerTransitionComplete = transitionStep(tempColor, dest_color, colorPulseTransitionStep, colorPulseTransitionStep);
-	}
-
-	Serial.println(tempIndex);
-	innerTransitionComplete = false;
-	while (!innerTransitionComplete && tempIndex >= 0) {
-		strip.setPixelColor(tempIndex, *tempColor);
-		tempIndex--;
-		innerTransitionComplete = transitionStep(tempColor, source_color, colorPulseTransitionStep, colorPulseTransitionStep);
-	}
-
-	strip.show();
-	delay(50);
-
-	colorPulseCurrentIndex++;
+  delay(100);
 }
+
+
+
+
+
 
 
 
