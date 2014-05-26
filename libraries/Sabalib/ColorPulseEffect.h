@@ -12,6 +12,8 @@ public:
 
 	void tick(void);
 
+	void setSourceColor(uint32_t color);
+	void setDestColor(uint32_t color);
 private:
 	uint32_t source_color_value;
 	uint32_t dest_color_value;

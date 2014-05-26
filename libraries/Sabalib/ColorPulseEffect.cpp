@@ -6,19 +6,24 @@ ColorPulseEffect::ColorPulseEffect(Section *sections) : BaseEffect(sections) {
 	sections->strip->begin();
 	sections->strip->show();
 
-	sections->strip->setPixelColor(2, sections->strip->Color(255, 0, 0));
-	sections->strip->show();
-
-	this->source_color_value = sections->strip->Color(0, 0, 100);
-	this->source_color = &source_color_value;
-	this->dest_color_value = sections->strip->Color(255, 0, 0);
-	this->dest_color = &dest_color_value;
+	setSourceColor(Adafruit_NeoPixel::Color(0, 0, 100));
+	setDestColor(Adafruit_NeoPixel::Color(255, 0, 0));
 	this->colorPulseCurrentIndex = 0;
 	this->colorPulseTransitionStep = 5;
 }
 
 ColorPulseEffect::~ColorPulseEffect() {
 
+}
+
+void ColorPulseEffect::setSourceColor(uint32_t color) {
+	this->source_color_value = color;
+	this->source_color = &source_color_value;
+}
+
+void ColorPulseEffect::setDestColor(uint32_t color) {
+	this->dest_color_value = color;
+	this->dest_color = &dest_color_value;
 }
 
 void ColorPulseEffect::tick(void) {
