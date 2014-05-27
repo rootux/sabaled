@@ -2,7 +2,8 @@
 #include "Arduino.h"
 #include "Sabalib.h"
 
-ColorPulseEffect::ColorPulseEffect(Section *sections) : BaseEffect(sections) {
+ColorPulseEffect::ColorPulseEffect(Section *sections, int sectionsStart, int sectionsEnd) : 
+	BaseEffect(sections, sectionsStart, sectionsEnd) {
 	sections->strip->begin();
 	sections->strip->show();
 
@@ -27,12 +28,12 @@ void ColorPulseEffect::setDestColor(uint32_t color) {
 }
 
 void ColorPulseEffect::tick(void) {
-
-	Adafruit_NeoPixel *strip = sections->strip;
+	Section *sect = &sections[sectionsStart];
+	Adafruit_NeoPixel *strip = sect->strip;
 
 	// We begin the transition from the current index going backwards
 	// because the source color is where we come from and destination color
-	// is where we're heading. To see the transitin come out smoothly on the
+	// is where we're heading. To see the transition come out smoothly on the
 	// strip we should start from the source, and change the color to be the
 	// most distinct (equal to destination color) at the farthest point
 	int tempIndex = colorPulseCurrentIndex;

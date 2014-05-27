@@ -1,7 +1,8 @@
 #include "PulseEffect.h"
 #include "Arduino.h"
 
-PulseEffect::PulseEffect(Section *sections) : BaseEffect(sections) {
+PulseEffect::PulseEffect(Section *sections, int sectionsStart, int sectionsEnd) : 
+	BaseEffect(sections, sectionsStart, sectionsEnd) {
 	sections->strip->begin();
 	sections->strip->show();
 
@@ -18,9 +19,16 @@ PulseEffect::~PulseEffect() {
 
 }
 
+/*Mapping is
+* 0-3 RIGHT TORSO HAND STICK
+* 4-7 CHEST HEAD BEARD
+* 8-9 LEFT TORSO HAND
+* 10 RIGHT LEG
+* 11 LEFT LEG
+*/
 void PulseEffect::tick(void) {
-
-	Adafruit_NeoPixel *strip = sections->strip;
+	Section *sect = &sections[0]; 
+	Adafruit_NeoPixel *strip = sect->strip;
 
 	if (pulse_current_level < pulse_max) {
 		pulse_current_level += pulse_step_forward;

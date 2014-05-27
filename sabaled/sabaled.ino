@@ -13,6 +13,7 @@
 #define HEART_PIN 8
 
 #define BUTTONS_NUM 7
+#define PARTS_NUM 6
 
 #define COLORS_NUM 4
 
@@ -46,9 +47,9 @@ volatile int activeEffect = 2;
 //};
 
 Section sections[13];
-Adafruit_NeoPixel *strips[6];
+Adafruit_NeoPixel *strips[PARTS_NUM];
 PulseEffect *pulseEffect;
-ColorPulseEffect *colorPulseEffect;
+ColorPulseEffect *colorPulseEffect[PARTS_NUM];
 
 void setup() {
 	Serial.begin(9600);
@@ -74,7 +75,7 @@ void initColors() {
 //	}
 //}
 
-Adafruit_NeoPixel *testStrip = new Adafruit_NeoPixel(720, 6, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel *testStrip = new Adafruit_NeoPixel(720, 6,NEO_GRB + NEO_KHZ800);
 Section *testSection = new Section(0, 240, testStrip);
 Adafruit_NeoPixel *testStrip2 = new Adafruit_NeoPixel(50, 7, NEO_GRB + NEO_KHZ800);
 Section *testSection2 = new Section(0, 50, testStrip2);
@@ -82,39 +83,45 @@ Section *testSection2 = new Section(0, 50, testStrip2);
 void initSections(void) {
 	//RIGHT TORSO HAND STICK
 	strips[0] = new Adafruit_NeoPixel(200, RIGHT_TORSO_HAND_STICK_PIN, NEO_GRB + NEO_KHZ800);
-	sections[0] = Section(0, 49, strips[0]);
+	sections[0]= Section(0, 49, strips[0]);
 	sections[1] = Section(50, 99, strips[0]);
 	sections[2] = Section(100, 149, strips[0]);
 	sections[3] = Section(150, 199, strips[0]);
-
+        colorPulseEffect[0] = new ColorPulseEffect(sections, 0, 3);
+        
 	//CHEST HEAD BEARD
 	strips[1] = new Adafruit_NeoPixel(960, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
 	sections[4] = Section(0, 239, strips[1]);
 	sections[5] = Section(240, 479, strips[1]);
 	sections[6] = Section(480, 719, strips[1]);
 	sections[7] = Section(720, 959, strips[1]);
+        colorPulseEffect[1] = new ColorPulseEffect(sections, 4, 7);
 
 	//LEFT TORSO HAND
 	strips[2] = new Adafruit_NeoPixel(100, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
-	sections[8] = Section(0, 49, strips[2]);
-	sections[9] = Section(50, 99, strips[2]);
-
+	sections[8] = Section(0, 30, strips[2]);
+	sections[9] = Section(31, 49, strips[2]); //TODO: hack
+        colorPulseEffect[2] = new ColorPulseEffect(sections, 8, 9);
+        
 	//RIGHT LEG
 	strips[3] = new Adafruit_NeoPixel(50, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
 	sections[10] = Section(0, 49, strips[3]);
+        colorPulseEffect[3] = new ColorPulseEffect(sections, 10,10);
 
 	//LEFT LEG
 	strips[4] = new Adafruit_NeoPixel(50, LEFT_LEG_PIN, NEO_GRB + NEO_KHZ800);
 	sections[11] = Section(0, 49, strips[4]);
+        colorPulseEffect[4] = new ColorPulseEffect(sections, 11,11);
 
 	//HEART
 	strips[5] = new Adafruit_NeoPixel(240, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
 	sections[12] = Section(0, 239, strips[5]);
+        colorPulseEffect[5] = new ColorPulseEffect(sections, 12,12);
 
 	// For now, i pass in the section that i work with
-	//pulseEffect = new PulseEffect(testSection2);
-        colorPulseEffect = new ColorPulseEffect(testSection);
-        colorPulseEffect->setSourceColor(Adafruit_NeoPixel::Color(10, 10, 10));
+	//pulseEffect = new PulseEffect(sections);
+        
+        //colorPulseEffect->setSourceColor(Adafruit_NeoPixel::Color(10, 10, 10));
 }
 
 void tick() {
@@ -131,12 +138,14 @@ void tickActiveProgram(void) {
 			//BTN_ONLY_HEART_PIN
 		case 1:
 			//Serial.println("Only Heart");
-                        pulseEffect->tick();
+                        //pulseEffect->tick();
 			break;
 			//BTN_PULSE_PIN
 		case 2:
 			//Serial.println("Pulse");
-			colorPulseEffect->tick();
+                        for (int i=0;i<PARTS_NUM;i++) {
+			  colorPulseEffect[i]->tick();
+                        }
 			break;
 			//BTN_FIREWORKS_PIN
 		case 3:
@@ -154,7 +163,9 @@ void tickActiveProgram(void) {
 		case 6:
                         currentColor = colors[(currentColorIndex % 4)];
                         currentColorIndex++;
-                        colorPulseEffect->setSourceColor(currentColor);
+                        for(int i=0;i<PARTS_NUM;i++) {
+                          colorPulseEffect[i]->setSourceColor(currentColor);
+                        }
 			Serial.println("Overrider");
 			break;
 	}
@@ -163,6 +174,7 @@ void tickActiveProgram(void) {
 void loop() {
   updateEffectByButtons();
   //loopSonars();
+  delay(800);
 }
 
 

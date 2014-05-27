@@ -6,7 +6,7 @@
 
 class ColorPulseEffect : public BaseEffect {
 public:
-	ColorPulseEffect(Section *section);
+	ColorPulseEffect(Section *section, int sectionsStart, int sectionsEnd);
 
 	~ColorPulseEffect();
 

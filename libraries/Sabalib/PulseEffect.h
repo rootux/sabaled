@@ -6,7 +6,7 @@
 
 class PulseEffect : public BaseEffect {
 public:
-	PulseEffect(Section *section);
+	PulseEffect(Section *section,int sectionsStart, int sectionsEnd);
 
 	~PulseEffect();
 
