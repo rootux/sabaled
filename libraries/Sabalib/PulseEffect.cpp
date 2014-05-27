@@ -3,11 +3,11 @@
 
 PulseEffect::PulseEffect(Section *sections, int sectionsStart, int sectionsEnd) : 
 	BaseEffect(sections, sectionsStart, sectionsEnd) {
-	sections->strip->begin();
-	sections->strip->show();
+	Section *sect = &sections[sectionsStart];
+	Adafruit_NeoPixel *strip = sect->strip;
+	strip->begin();
+	strip->show();
 
-	sections->strip->setPixelColor(2, sections->strip->Color(255, 0, 0));
-	sections->strip->show();
 	this->pulse_step_forward = 10;
 	this->pulse_step_backwrads = 10;
 	this->pulse_max = 200;
@@ -27,9 +27,9 @@ PulseEffect::~PulseEffect() {
 * 11 LEFT LEG
 */
 void PulseEffect::tick(void) {
-	Section *sect = &sections[0]; 
+	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;
-
+	
 	if (pulse_current_level < pulse_max) {
 		pulse_current_level += pulse_step_forward;
 	}
@@ -69,7 +69,9 @@ void PulseEffect::tick(void) {
 }
 
 int PulseEffect::pulseBackwardDim() {
-	Adafruit_NeoPixel *strip = sections->strip;
+	Section *sect = &sections[sectionsStart];
+	Adafruit_NeoPixel *strip = sect->strip;
+	
 	int temp_index = pulse_index - 1;
 	int temp_level = pulse_current_level - ((pulse_index - temp_index) * pulse_step_backwrads);
 	// Backward leds shut down

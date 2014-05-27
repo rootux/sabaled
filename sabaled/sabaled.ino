@@ -1,21 +1,23 @@
 #include <Adafruit_NeoPixel.h>
 #include <PulseEffect.h>
 #include <ColorPulseEffect.h>
+  #include <HeartBeatEffect.h>
 #include <Sabalib.h>
 #include <TimerThree.h>
 #include <NewPing.h>
 
-#define RIGHT_TORSO_HAND_STICK_PIN 3
-#define CHEST_HEAD_BEARD_PIN 4
-#define LEFT_TORSO_HAND_PIN 5
-#define LEFT_LEG_PIN 6
-#define RIGHT_LEG_PIN 7
-#define HEART_PIN 8
+#define RIGHT_TORSO_HAND_STICK_PIN 3 //A
+#define CHEST_HEAD_BEARD_PIN 4 //B
+#define LEFT_TORSO_HAND_PIN 5 //C
+#define LEFT_LEG_PIN 6 //D
+#define RIGHT_LEG_PIN 7 //E
+#define HEART_PIN 8 //F
 
 #define BUTTONS_NUM 7
 #define PARTS_NUM 6
-
 #define COLORS_NUM 4
+
+#define TIMER_INTERVAL 150000
 
 //Remember that there is also on/off button
 #define BTN_A_PIN 21
@@ -48,16 +50,19 @@ volatile int activeEffect = 2;
 
 Section sections[13];
 Adafruit_NeoPixel *strips[PARTS_NUM];
-PulseEffect *pulseEffect;
 ColorPulseEffect *colorPulseEffect[PARTS_NUM];
+PulseEffect *pulseEffect[PARTS_NUM];
+HeartBeatEffect *heartBeatEffect[PARTS_NUM];
 
 void setup() {
 	Serial.begin(9600);
+        Serial.println("Booting up...");
         initColors();
+        Serial.println("Init colors success...");        
 	//initSonars();
 	initSections();
-	Timer3.initialize(33333); // blinkLED to run every 0.01 second
-	Timer3.attachInterrupt(tick);
+        Serial.println("Init sections success...");
+        testSabaleAndStartTimer();
 }
 
 void initColors() {
@@ -75,11 +80,6 @@ void initColors() {
 //	}
 //}
 
-Adafruit_NeoPixel *testStrip = new Adafruit_NeoPixel(720, 6,NEO_GRB + NEO_KHZ800);
-Section *testSection = new Section(0, 240, testStrip);
-Adafruit_NeoPixel *testStrip2 = new Adafruit_NeoPixel(50, 7, NEO_GRB + NEO_KHZ800);
-Section *testSection2 = new Section(0, 50, testStrip2);
-
 void initSections(void) {
 	//RIGHT TORSO HAND STICK
 	strips[0] = new Adafruit_NeoPixel(200, RIGHT_TORSO_HAND_STICK_PIN, NEO_GRB + NEO_KHZ800);
@@ -87,7 +87,13 @@ void initSections(void) {
 	sections[1] = Section(50, 99, strips[0]);
 	sections[2] = Section(100, 149, strips[0]);
 	sections[3] = Section(150, 199, strips[0]);
+
         colorPulseEffect[0] = new ColorPulseEffect(sections, 0, 3);
+        pulseEffect[0] = new PulseEffect(sections,0,3);
+        heartBeatEffect[0] = new HeartBeatEffect(sections,0,3);
+ 
+        Serial.println("Right Torso Hand Stick inited...");
+        delay(50);
         
 	//CHEST HEAD BEARD
 	strips[1] = new Adafruit_NeoPixel(960, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
@@ -96,37 +102,86 @@ void initSections(void) {
 	sections[6] = Section(480, 719, strips[1]);
 	sections[7] = Section(720, 959, strips[1]);
         colorPulseEffect[1] = new ColorPulseEffect(sections, 4, 7);
+        pulseEffect[1] = new PulseEffect(sections,4,7);
+        heartBeatEffect[1] = new HeartBeatEffect(sections,4,7);
+
+        Serial.println("Chest Head Beard inited...");
+        delay(50);
 
 	//LEFT TORSO HAND
-	strips[2] = new Adafruit_NeoPixel(100, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
+	strips[2] = new Adafruit_NeoPixel(100, LEFT_TORSO_HAND_PIN, NEO_GRB + NEO_KHZ800);
 	sections[8] = Section(0, 30, strips[2]);
 	sections[9] = Section(31, 49, strips[2]); //TODO: hack
         colorPulseEffect[2] = new ColorPulseEffect(sections, 8, 9);
+        pulseEffect[2] = new PulseEffect(sections,8,9);
+        heartBeatEffect[2] = new HeartBeatEffect(sections,8,9);
+
+        Serial.println("Left torso hand inited...");
+        delay(50);
         
 	//RIGHT LEG
-	strips[3] = new Adafruit_NeoPixel(50, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
+	strips[3] = new Adafruit_NeoPixel(50, RIGHT_LEG_PIN, NEO_GRB + NEO_KHZ800);
 	sections[10] = Section(0, 49, strips[3]);
         colorPulseEffect[3] = new ColorPulseEffect(sections, 10,10);
+        pulseEffect[3] = new PulseEffect(sections,10,10);
+        heartBeatEffect[3] = new HeartBeatEffect(sections,10,10);
 
+        Serial.println("Right leg inited...");
+        delay(50);
+        
 	//LEFT LEG
 	strips[4] = new Adafruit_NeoPixel(50, LEFT_LEG_PIN, NEO_GRB + NEO_KHZ800);
 	sections[11] = Section(0, 49, strips[4]);
         colorPulseEffect[4] = new ColorPulseEffect(sections, 11,11);
+        pulseEffect[4] = new PulseEffect(sections,11,11);    
+        heartBeatEffect[4] = new HeartBeatEffect(sections,11,11);        
+
+        Serial.println("Left leg inited...");
+        delay(50);
 
 	//HEART
-	strips[5] = new Adafruit_NeoPixel(240, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
+	strips[5] = new Adafruit_NeoPixel(240, HEART_PIN, NEO_GRB + NEO_KHZ800);
 	sections[12] = Section(0, 239, strips[5]);
         colorPulseEffect[5] = new ColorPulseEffect(sections, 12,12);
-
-	// For now, i pass in the section that i work with
-	//pulseEffect = new PulseEffect(sections);
-        
+        pulseEffect[5] = new PulseEffect(sections,12,12);
+        heartBeatEffect[5] = new HeartBeatEffect(sections,12,12);
         //colorPulseEffect->setSourceColor(Adafruit_NeoPixel::Color(10, 10, 10));
+        
+        Serial.println("Heart is pumping...");
+        delay(50);
+
 }
 
 void tick() {
   tickActiveProgram();
-  
+}
+
+/**
+* Perform an init
+*/
+void testSabaleAndStartTimer() {
+  Serial.println("Starting test");
+  delay(50);
+  for(int i=0; i< PARTS_NUM-1;i++) {
+      Serial.print("Testing part:");
+      Serial.println(i);
+      
+     strips[i]->begin();
+     strips[i]->show();
+     for(int j=0;j<strips[i]->numPixels();j++) {
+       strips[i]->setPixelColor(j, colors[0]);
+     }
+     strips[i]->show();
+     delay(1000);
+     //clear
+     for(int j=0;j<strips[i]->numPixels();j++) {
+       strips[i]->setPixelColor(j, 0);
+     }
+     strips[i]->show();
+  }
+  Serial.println("Test success! go saba go!");
+  Timer3.initialize(TIMER_INTERVAL); // blinkLED to run every 0.01 second
+  Timer3.attachInterrupt(tick); //Start the timer
 }
 
 void tickActiveProgram(void) {
@@ -137,13 +192,19 @@ void tickActiveProgram(void) {
 			break;
 			//BTN_ONLY_HEART_PIN
 		case 1:
+
 			//Serial.println("Only Heart");
                         //pulseEffect->tick();
+                        //for (int i=0;i<PARTS_NUM;i++) {
+                          //colorPulseEffect[i]->tick();
+                        //}
 			break;
 			//BTN_PULSE_PIN
 		case 2:
-			//Serial.println("Pulse");
+                        //colorPulseEffect[5]->tick();
+		        //Serial.println("Pulse");
                         for (int i=0;i<PARTS_NUM;i++) {
+                          //pulseEffect[i]->tick();
 			  colorPulseEffect[i]->tick();
                         }
 			break;
@@ -172,7 +233,7 @@ void tickActiveProgram(void) {
 }
 
 void loop() {
-  updateEffectByButtons();
+  //updateEffectByButtons();
   //loopSonars();
   delay(800);
 }

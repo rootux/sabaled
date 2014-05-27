@@ -4,11 +4,13 @@
 
 ColorPulseEffect::ColorPulseEffect(Section *sections, int sectionsStart, int sectionsEnd) : 
 	BaseEffect(sections, sectionsStart, sectionsEnd) {
-	sections->strip->begin();
-	sections->strip->show();
+		Section *sect = &sections[sectionsStart];
+		Adafruit_NeoPixel *strip = sect->strip;
+	strip->begin();
+	strip->show();
 
-	setSourceColor(Adafruit_NeoPixel::Color(0, 0, 100));
-	setDestColor(Adafruit_NeoPixel::Color(255, 0, 0));
+	setSourceColor(Adafruit_NeoPixel::Color(255, 50, 0));
+	setDestColor(Adafruit_NeoPixel::Color(191, 0, 255));
 	this->colorPulseCurrentIndex = 0;
 	this->colorPulseTransitionStep = 5;
 }
@@ -37,6 +39,7 @@ void ColorPulseEffect::tick(void) {
 	// strip we should start from the source, and change the color to be the
 	// most distinct (equal to destination color) at the farthest point
 	int tempIndex = colorPulseCurrentIndex;
+	
 	uint32_t tempColorValue = (uint32_t)*source_color;
 	uint32_t *tempColor = &tempColorValue;
 	bool innerTransitionComplete = false;
