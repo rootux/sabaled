@@ -19,6 +19,10 @@ PulseEffect::~PulseEffect() {
 
 }
 
+void PulseEffect::setSourceColor(uint32_t color) {
+
+}
+
 /*Mapping is
 * 0-3 RIGHT TORSO HAND STICK
 * 4-7 CHEST HEAD BEARD

@@ -10,9 +10,8 @@ HeartBeatEffect::HeartBeatEffect(Section *sections, int sectionsStart, int secti
 	strip->show();
 
 	setSourceColor(Adafruit_NeoPixel::Color(255, 50, 0));
-	setDestColor(Adafruit_NeoPixel::Color(191, 0, 255));
-	this->colorPulseCurrentIndex = 0;
-	this->colorPulseTransitionStep = 5;
+	this->currentIndex = 0;
+	this->currentStep = 5;
 	this->currentBrightness = strip->numPixels();
 }
 
@@ -25,16 +24,11 @@ void HeartBeatEffect::setSourceColor(uint32_t color) {
 	this->source_color = &source_color_value;
 }
 
-void HeartBeatEffect::setDestColor(uint32_t color) {
-	this->dest_color_value = color;
-	this->dest_color = &dest_color_value;
-}
-
 void HeartBeatEffect::tick(void) {
 	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;
 
-	int tempIndex = colorPulseCurrentIndex;
+	int tempIndex = currentIndex;
 	uint32_t tempColorValue = (uint32_t)*source_color;
 	uint32_t *tempColor = &tempColorValue;
 
@@ -44,7 +38,7 @@ void HeartBeatEffect::tick(void) {
       	strip->setPixelColor(tempIndex, tempColorValue);
       	strip->setBrightness(currentBrightness);
       	strip->show();
-      	colorPulseCurrentIndex++;
+      	currentIndex++;
       	currentBrightness--;
       	// delay(50);
       	return;
@@ -55,17 +49,17 @@ void HeartBeatEffect::tick(void) {
   	  	strip->setPixelColor(tempIndex, tempColorValue);
 	    strip->setBrightness(currentBrightness);
 	    strip->show();
-	    colorPulseCurrentIndex--;
+	    currentIndex--;
 	    return;
 	  }
 
 	currentBrightness = strip->numPixels();
 
-	colorPulseCurrentIndex++;
+	currentIndex++;
 
 	// Touched the end of the strip - go back to the start
 	 if (tempIndex == strip->numPixels()) {
-	 	colorPulseCurrentIndex = 0;
+	 	currentIndex = 0;
 	 }
 }
 

@@ -11,7 +11,8 @@ public:
 	~PulseEffect();
 
 	void tick(void);
-
+	void setSourceColor(uint32_t color);
+	
 private:
 	int pulse_step_forward;
 	int pulse_step_backwrads;

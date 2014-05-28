@@ -14,14 +14,15 @@
 #define RIGHT_LEG_PIN 7 //E
 #define HEART_PIN 8 //F
 
-#define BUTTONS_NUM 9
+#define BUTTONS_NUM 7
 #define PARTS_NUM 6
 #define COLORS_NUM 4
 
 #define TIMER_INTERVAL 100000
 #define DEBUGI true
  
-#define OVERRIDER_PIN 7
+#define OVERRIDER_PIN_INDEX 7
+#define PUSHBUTTON_PIN_INDEX 8
 //Remember that there is also on/off button
 #define BTN_A_PIN 21
 #define BTN_B_PIN 22
@@ -47,6 +48,7 @@ uint32_t sliderC = 0;
 unsigned long pingTimer[SONAR_NUM]; // Holds the times when the next ping should happen for each sensor.
 unsigned int sonars[SONAR_NUM];     // Where the ping distances are stored.
 unsigned int buttons[BUTTONS_NUM];  // Holds the buttons states
+unsigned int push_buttons[2];  // Holds the push buttons states
 uint32_t colors[COLORS_NUM];
 uint32_t currentColorIndex = 0;
 uint32_t currentColor;
@@ -269,11 +271,11 @@ void tickActiveProgram(void) {
 			
 		case 6: //BTN_OVERRIDER_PIN
                         SerialPrintln("Overrider");
-                        currentColor = colors[(currentColorIndex % 4)];
-                        currentColorIndex++;
-                        for(int i=0;i<PARTS_NUM;i++) {
-                          colorPulseEffect[i]->setSourceColor(currentColor);
-                        }
+//                        currentColor = colors[(currentColorIndex % 4)];
+//                        currentColorIndex++;
+//                        for(int i=0;i<PARTS_NUM;i++) {
+//                          colorPulseEffect[i]->setSourceColor(currentColor);
+//                        }
 			break;
 	}
 }
@@ -291,12 +293,13 @@ void updateEffectByButtons() {
 	for (int i = 0; i < BUTTONS_NUM; i++) {
 		int newState = digitalRead(BTN_A_PIN + i);
 		if (buttons[i] == newState)
-			continue;
+		  continue;
 
+                // the button state has changed!
 		buttons[i] = newState;
-		// the button state has changed!
-		if (newState == LOW) {                // check if the button is pressed
-			SerialPrintln("Button just pressed");
+                // check if the button is pressed
+		if (newState == LOW) {
+		        SerialPrintln("Button just pressed");
 			noInterrupts();
 			activeEffect = i;
 			interrupts();
@@ -305,9 +308,27 @@ void updateEffectByButtons() {
 			SerialPrintln("Button just released");
 		}
 	}
+
+        //Check push buttons
+        for(int i=0;i<2;i++) {
+          int newState = digitalRead(PUSH_BTN_A_PIN + i);
+	  if (push_buttons[i] == newState)
+              continue;
+        
+          // the button state has changed!
+          push_buttons[i] = newState;
+          if(newState == LOW) {
+             if(i==0) {
+                switchColors();
+             }else {
+               switchColors(); //TODO: do something else with the push button
+             }
+          }
+        }
+        
         
         //CHECK IF OVERRIDER IS UP
-        if(buttons[OVERRIDER_PIN] == LOW)
+        if(buttons[OVERRIDER_PIN_INDEX] == LOW)
         {
           //Read the 3 sliders        
           noInterrupts();
@@ -316,6 +337,17 @@ void updateEffectByButtons() {
           sliderC = analogRead(SLIDER_C_PIN);
           interrupts();
         }
+}
+
+void switchColors() {
+  currentColor = colors[(currentColorIndex % COLORS_NUM)];
+  currentColorIndex++;
+  for(int i=0; i<PARTS_NUM;i++) {
+    colorPulseEffect[i]->setSourceColor(currentColor);
+    pulseEffect[i]->setSourceColor(currentColor);
+    heartBeatEffect[i]->setSourceColor(currentColor);
+    colorWipeEffect[i]->setSourceColor(currentColor);
+  }
 }
 
 //void loopSonars() {
