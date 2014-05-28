@@ -2,8 +2,8 @@
 #include "Arduino.h"
 #include "Sabalib.h"
 
-HeartBeatEffect::HeartBeatEffect(Section *sections, int sectionsStart, int sectionsEnd) : 
-	BaseEffect(sections, sectionsStart, sectionsEnd) {
+HeartBeatEffect::HeartBeatEffect(Section *sections, int sectionsStart, int sectionsEnd,int* globalSpeedFactor) : 
+	BaseEffect(sections, sectionsStart, sectionsEnd,globalSpeedFactor) {
 	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;
 	strip->begin();
@@ -25,6 +25,10 @@ void HeartBeatEffect::setSourceColor(uint32_t color) {
 }
 
 void HeartBeatEffect::tick(void) {
+	callcounter++;
+	if (callcounter % (*globalSpeedFactor) != 0)
+	 	return;
+
 	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;
 

@@ -6,7 +6,7 @@
 
 class BaseEffect {
 public:
-	BaseEffect(Section *sections, int sectionsStart, int sectionsEnd);
+	BaseEffect(Section *sections, int sectionsStart, int sectionsEnd, int* globalSpeedFactor);
 
 	~BaseEffect();
 
@@ -16,6 +16,8 @@ protected:
 	Section *sections;
 	int sectionsStart;
 	int sectionsEnd;
+	int callcounter;
+	int* globalSpeedFactor;
 };
 
 #endif // BASEEFFECT_H

@@ -1,8 +1,8 @@
 #include "PulseEffect.h"
 #include "Arduino.h"
 
-PulseEffect::PulseEffect(Section *sections, int sectionsStart, int sectionsEnd) : 
-	BaseEffect(sections, sectionsStart, sectionsEnd) {
+PulseEffect::PulseEffect(Section *sections, int sectionsStart, int sectionsEnd, int* globalSpeedFactor) : 
+	BaseEffect(sections, sectionsStart, sectionsEnd, globalSpeedFactor) {
 	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;
 	strip->begin();
@@ -31,6 +31,10 @@ void PulseEffect::setSourceColor(uint32_t color) {
 * 11 LEFT LEG
 */
 void PulseEffect::tick(void) {
+	callcounter++;
+	if (callcounter % (*globalSpeedFactor) != 0)
+	 	return;
+	 
 	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;
 	

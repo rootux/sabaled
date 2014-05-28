@@ -6,7 +6,7 @@
 
 class HeartBeatEffect : public BaseEffect {
 public:
-	HeartBeatEffect(Section *section, int sectionsStart, int sectionsEnd);
+	HeartBeatEffect(Section *section, int sectionsStart, int sectionsEnd, int* globalSpeedFactor);
 
 	~HeartBeatEffect();
 

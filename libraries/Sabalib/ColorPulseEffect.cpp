@@ -2,8 +2,9 @@
 #include "Arduino.h"
 #include "Sabalib.h"
 
-ColorPulseEffect::ColorPulseEffect(Section *sections, int sectionsStart, int sectionsEnd) : 
-	BaseEffect(sections, sectionsStart, sectionsEnd) {
+ColorPulseEffect::ColorPulseEffect(Section *sections, 
+	int sectionsStart, int sectionsEnd, int* globalSpeedFactor) : 
+	BaseEffect(sections, sectionsStart, sectionsEnd, globalSpeedFactor) {
 		Section *sect = &sections[sectionsStart];
 		Adafruit_NeoPixel *strip = sect->strip;
 	strip->begin();
@@ -13,6 +14,8 @@ ColorPulseEffect::ColorPulseEffect(Section *sections, int sectionsStart, int sec
 	setDestColor(Adafruit_NeoPixel::Color(191, 0, 255));
 	this->colorPulseCurrentIndex = 0;
 	this->colorPulseTransitionStep = 5;
+	this->globalSpeedFactor = globalSpeedFactor;
+	//this->callCounter = 0;
 }
 
 ColorPulseEffect::~ColorPulseEffect() {
@@ -30,6 +33,10 @@ void ColorPulseEffect::setDestColor(uint32_t color) {
 }
 
 void ColorPulseEffect::tick(void) {
+	callcounter++;
+	if (callcounter % (*globalSpeedFactor) != 0)
+	 	return;
+	 
 	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;
 

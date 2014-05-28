@@ -6,7 +6,7 @@
 
 class ColorWipeEffect : public BaseEffect {
 public:
-	ColorWipeEffect(Section *section, int sectionsStart, int sectionsEnd);
+	ColorWipeEffect(Section *section, int sectionsStart, int sectionsEnd, int* globalSpeedFactor);
 
 	~ColorWipeEffect();
 
