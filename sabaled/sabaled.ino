@@ -18,7 +18,7 @@
 #define COLORS_NUM 4
 
 #define TIMER_INTERVAL 50000
-#define DEBUGI true
+#define DEBUGI false
 
 //Remember that there is also on/off button
 #define BTN_A_PIN 21
@@ -76,7 +76,13 @@ void SerialPrint(char* str) {
 
 void SerialPrintln(char* str) {
   if(DEBUGI) {
-    Serial.SerialPrintln(str);
+    Serial.println(str);
+  }
+}
+
+void SerialPrintln(int str) {
+  if(DEBUGI) {
+    Serial.println(str);
   }
 }
 
@@ -195,7 +201,7 @@ void testSabaleAndStartTimer() {
      strips[i]->show();
   }
   SerialPrint("Test success! go saba go!");
-  Timer3.inlnitialize(TIMER_INTERVAL); // blinkLED to run every 0.01 second
+  Timer3.initialize(TIMER_INTERVAL); // blinkLED to run every 0.01 second
   Timer3.attachInterrupt(tick); //Start the timer
 }
 
