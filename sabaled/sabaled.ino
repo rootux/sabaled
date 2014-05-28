@@ -17,7 +17,8 @@
 #define PARTS_NUM 6
 #define COLORS_NUM 4
 
-#define TIMER_INTERVAL 150000
+#define TIMER_INTERVAL 50000
+#define DEBUGI true
 
 //Remember that there is also on/off button
 #define BTN_A_PIN 21
@@ -55,14 +56,28 @@ PulseEffect *pulseEffect[PARTS_NUM];
 HeartBeatEffect *heartBeatEffect[PARTS_NUM];
 
 void setup() {
-	Serial.begin(9600);
-        Serial.println("Booting up...");
+        if(DEBUGI) {
+	  Serial.begin(9600);
+        }
+        SerialPrint("Booting up...");
         initColors();
-        Serial.println("Init colors success...");        
+        SerialPrintln("Init colors success...");        
 	//initSonars();
 	initSections();
-        Serial.println("Init sections success...");
+        SerialPrintln("Init sections success...");
         testSabaleAndStartTimer();
+}
+
+void SerialPrint(char* str) {
+  if(DEBUGI) {
+    Serial.print(str);
+  }
+}
+
+void SerialPrintln(char* str) {
+  if(DEBUGI) {
+    Serial.SerialPrintln(str);
+  }
 }
 
 void initColors() {
@@ -92,7 +107,7 @@ void initSections(void) {
         pulseEffect[0] = new PulseEffect(sections,0,3);
         heartBeatEffect[0] = new HeartBeatEffect(sections,0,3);
  
-        Serial.println("Right Torso Hand Stick inited...");
+        SerialPrintln("Right Torso Hand Stick inited...");
         delay(50);
         
 	//CHEST HEAD BEARD
@@ -105,7 +120,7 @@ void initSections(void) {
         pulseEffect[1] = new PulseEffect(sections,4,7);
         heartBeatEffect[1] = new HeartBeatEffect(sections,4,7);
 
-        Serial.println("Chest Head Beard inited...");
+        SerialPrintln("Chest Head Beard inited...");
         delay(50);
 
 	//LEFT TORSO HAND
@@ -116,7 +131,7 @@ void initSections(void) {
         pulseEffect[2] = new PulseEffect(sections,8,9);
         heartBeatEffect[2] = new HeartBeatEffect(sections,8,9);
 
-        Serial.println("Left torso hand inited...");
+        SerialPrintln("Left torso hand inited...");
         delay(50);
         
 	//RIGHT LEG
@@ -126,7 +141,7 @@ void initSections(void) {
         pulseEffect[3] = new PulseEffect(sections,10,10);
         heartBeatEffect[3] = new HeartBeatEffect(sections,10,10);
 
-        Serial.println("Right leg inited...");
+        SerialPrintln("Right leg inited...");
         delay(50);
         
 	//LEFT LEG
@@ -136,7 +151,7 @@ void initSections(void) {
         pulseEffect[4] = new PulseEffect(sections,11,11);    
         heartBeatEffect[4] = new HeartBeatEffect(sections,11,11);        
 
-        Serial.println("Left leg inited...");
+        SerialPrintln("Left leg inited...");
         delay(50);
 
 	//HEART
@@ -147,7 +162,7 @@ void initSections(void) {
         heartBeatEffect[5] = new HeartBeatEffect(sections,12,12);
         //colorPulseEffect->setSourceColor(Adafruit_NeoPixel::Color(10, 10, 10));
         
-        Serial.println("Heart is pumping...");
+        SerialPrintln("Heart is pumping...");
         delay(50);
 
 }
@@ -160,11 +175,11 @@ void tick() {
 * Perform an init
 */
 void testSabaleAndStartTimer() {
-  Serial.println("Starting test");
+  SerialPrintln("Starting test");
   delay(50);
-  for(int i=0; i< PARTS_NUM-1;i++) {
-      Serial.print("Testing part:");
-      Serial.println(i);
+  for(int i=0; i< PARTS_NUM;i++) {
+      SerialPrint("Testing part:");
+      SerialPrintln(i);
       
      strips[i]->begin();
      strips[i]->show();
@@ -172,15 +187,15 @@ void testSabaleAndStartTimer() {
        strips[i]->setPixelColor(j, colors[0]);
      }
      strips[i]->show();
-     delay(1000);
+     delay(500);
      //clear
      for(int j=0;j<strips[i]->numPixels();j++) {
        strips[i]->setPixelColor(j, 0);
      }
      strips[i]->show();
   }
-  Serial.println("Test success! go saba go!");
-  Timer3.initialize(TIMER_INTERVAL); // blinkLED to run every 0.01 second
+  SerialPrint("Test success! go saba go!");
+  Timer3.inlnitialize(TIMER_INTERVAL); // blinkLED to run every 0.01 second
   Timer3.attachInterrupt(tick); //Start the timer
 }
 
@@ -188,12 +203,12 @@ void tickActiveProgram(void) {
 	switch (activeEffect) {
 		//BTN_REVERSE_PULSE_PIN
 		case 0:
-			//Serial.println("Reverse Pulse");
+			//SerialPrintln("Reverse Pulse");
 			break;
 			//BTN_ONLY_HEART_PIN
 		case 1:
-
-			//Serial.println("Only Heart");
+			//SerialPrintln("Only Heart");
+                        heartBeatEffect[5]->tick();
                         //pulseEffect->tick();
                         //for (int i=0;i<PARTS_NUM;i++) {
                           //colorPulseEffect[i]->tick();
@@ -202,23 +217,25 @@ void tickActiveProgram(void) {
 			//BTN_PULSE_PIN
 		case 2:
                         //colorPulseEffect[5]->tick();
-		        //Serial.println("Pulse");
+		        //SerialPrintln("Pulse");
                         for (int i=0;i<PARTS_NUM;i++) {
                           //pulseEffect[i]->tick();
 			  colorPulseEffect[i]->tick();
+                            //heartBeatEffect[i]->tick();
+                            
                         }
 			break;
 			//BTN_FIREWORKS_PIN
 		case 3:
-			Serial.println("Fireworks");
+			SerialPrintln("Fireworks");
 			break;
 			//BTN_ELECTIC_SHOCK_PIN
 		case 4:
-			Serial.println("Electric Shock");
+			SerialPrintln("Electric Shock");
 			break;
 			//BTN_ELECTRIC_SPARKS_PIN
 		case 5:
-			Serial.println("Electric Sparks");
+			SerialPrintln("Electric Sparks");
 			break;
 			//BTN_OVERRIDER_PIN
 		case 6:
@@ -227,7 +244,7 @@ void tickActiveProgram(void) {
                         for(int i=0;i<PARTS_NUM;i++) {
                           colorPulseEffect[i]->setSourceColor(currentColor);
                         }
-			Serial.println("Overrider");
+			SerialPrintln("Overrider");
 			break;
 	}
 }
@@ -250,13 +267,13 @@ void updateEffectByButtons() {
 		buttons[i] = newState;
 		// the button state has changed!
 		if (newState == LOW) {                // check if the button is pressed
-			Serial.println("Button just pressed");
+			SerialPrintln("Button just pressed");
 			noInterrupts();
 			activeEffect = i;
 			interrupts();
 			break;
 		} else {
-			Serial.println("Button just released");
+			SerialPrintln("Button just released");
 		}
 	}
 

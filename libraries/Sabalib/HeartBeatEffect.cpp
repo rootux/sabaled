@@ -38,34 +38,34 @@ void HeartBeatEffect::tick(void) {
 	uint32_t tempColorValue = (uint32_t)*source_color;
 	uint32_t *tempColor = &tempColorValue;
 
+	
 	//Dim it
 	if(currentBrightness > 0) {
       	strip->setPixelColor(tempIndex, tempColorValue);
       	strip->setBrightness(currentBrightness);
       	strip->show();
-      	tempIndex++;
+      	colorPulseCurrentIndex++;
       	currentBrightness--;
-      	delay(50);
+      	// delay(50);
       	return;
   	}
 
-  	tempIndex--;
 
-
-  	delay(1000);
   	  if(tempIndex > 0) {
   	  	strip->setPixelColor(tempIndex, tempColorValue);
-	    strip->setBrightness(tempIndex);
+	    strip->setBrightness(currentBrightness);
 	    strip->show();
+	    colorPulseCurrentIndex--;
+	    return;
 	  }
 
-	  currentBrightness = strip->numPixels();
+	currentBrightness = strip->numPixels();
 
 	colorPulseCurrentIndex++;
 
 	// Touched the end of the strip - go back to the start
-	if (tempIndex == strip->numPixels()) {
-		colorPulseCurrentIndex = 0;
-	}
+	 if (tempIndex == strip->numPixels()) {
+	 	colorPulseCurrentIndex = 0;
+	 }
 }
 

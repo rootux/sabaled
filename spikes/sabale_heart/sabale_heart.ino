@@ -1,6 +1,6 @@
 #include <Adafruit_NeoPixel.h>
 
-#define PIN 6
+#define PIN 8
 #define PIN2 4
 #define PIN3 5
 #define PIN4 6
