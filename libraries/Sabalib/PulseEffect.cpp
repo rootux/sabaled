@@ -31,9 +31,9 @@ void PulseEffect::setSourceColor(uint32_t color) {
 * 11 LEFT LEG
 */
 void PulseEffect::tick(void) {
-	callcounter++;
-	if (callcounter % (*globalSpeedFactor) != 0)
-	 	return;
+	// callcounter++;
+	// if (callcounter % (*globalSpeedFactor) != 0)
+	//  	return;
 	 
 	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;

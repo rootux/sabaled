@@ -14,25 +14,25 @@
 #define RIGHT_LEG_PIN 7 //E
 #define HEART_PIN 8 //F
 
-#define BUTTONS_NUM 7
+#define BUTTONS_NUM 4
 #define PARTS_NUM 6
 #define COLORS_NUM 4
 
-#define TIMER_INTERVAL 100000
+//#define TIMER_INTERVAL 100000
 #define DEBUGI true
  
-#define OVERRIDER_PIN_INDEX 7
-#define PUSHBUTTON_PIN_INDEX 8
+//#define OVERRIDER_PIN_INDEX 7
+//#define PUSHBUTTON_PIN_INDEX 8
 
-#define BTN_A_PIN 23 //BTN_3
-#define BTN_B_PIN 24 //BTN_3
-#define BTN_C_PIN 25 //BTN_5
-#define BTN_D_PIN 26 //BTN_6
-#define BTN_E_PIN 27 //EMPTY
-#define BTN_F_PIN 28 //EMPTY
-#define BTN_G_PIN 29 //PUSH_BTN_1
-#define PUSH_BTN_A_PIN 30 //PUSH_BTN_2
-#define PUSH_BTN_B_PIN 31
+#define BTN_A_PIN 47 //BTN_3 //47
+#define BTN_B_PIN 48 //BTN_4 //48
+#define BTN_C_PIN 49 //BTN_5 //49
+#define BTN_D_PIN 50 //BTN_6 //50
+//#define BTN_E_PIN 27 //EMPTY
+//#define BTN_F_PIN 28 //EMPTY
+//#define BTN_G_PIN 29 
+#define PUSH_BTN_A_PIN 51 //PUSH_BTN_1 //51 
+#define PUSH_BTN_B_PIN 52 //PUSH_BTN_2 //52
 #define SLIDER_A_PIN 32
 #define SLIDER_B_PIN 33
 #define SLIDER_C_PIN 34
@@ -81,16 +81,16 @@ void setup() {
 	//initSonars();
 	initSections();
         SerialPrintln("Init sections success...");
-        testSabaleAndStartTimer();
+        testSabale();
 }
 void initPorts() {
   pinMode(BTN_A_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
   pinMode(BTN_B_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
   pinMode(BTN_C_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
   pinMode(BTN_D_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(BTN_E_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(BTN_F_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(BTN_G_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+//  pinMode(BTN_E_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+//  pinMode(BTN_F_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+//  pinMode(BTN_G_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
   pinMode(PUSH_BTN_A_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
   pinMode(PUSH_BTN_B_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
   pinMode(SLIDER_A_PIN, INPUT);    // sets the digital pin as input to read switch  
@@ -222,9 +222,9 @@ void tick() {
 }
 
 /**
-* Perform an init
+* Check that sabale has all his parts
 */
-void testSabaleAndStartTimer() {
+void testSabale() {
   SerialPrintln("Starting test");
   delay(50);
   for(int i=0; i< PARTS_NUM;i++) {
@@ -245,8 +245,6 @@ void testSabaleAndStartTimer() {
      strips[i]->show();
   }
   SerialPrint("Test success! go saba go!");
-  Timer3.initialize(TIMER_INTERVAL); // blinkLED to run every 0.01 second
-  Timer3.attachInterrupt(tick); //Start the timer
 }
 
 void tickActiveProgram(void) {
@@ -267,12 +265,12 @@ void tickActiveProgram(void) {
                         SerialPrintln("Pulse");
                         //colorPulseEffect[5]->tick();
 		        //SerialPrintln("Pulse");
-                        //for (int i=0;i<PARTS_NUM;i++) {
+                        for (int i=0;i<PARTS_NUM;i++) {
                           //pulseEffect[i]->tick();
-			  colorPulseEffect[5]->tick();
+			  colorPulseEffect[i]->tick();
                             //heartBeatEffect[i]->tick();
                             
-                        //}
+                        }
 			break;
 		case 3:  //Fireworks
 			SerialPrintln("Fireworks");
@@ -298,8 +296,9 @@ void tickActiveProgram(void) {
 
 void loop() {
   updateEffectByButtons();
+  tick();
   //loopSonars();
-  delay(1000);
+  //delay(1000);
 }
 
 
@@ -330,9 +329,8 @@ void updateEffectByButtons() {
           int newState = digitalRead(PUSH_BTN_A_PIN + i);
 	  if (push_buttons[i] == newState)
               continue;
-         
-          
-          // the button state has changed!
+
+          // push button state has changed!
           push_buttons[i] = newState;
           if(newState == LOW) {
              switchColors();
@@ -341,15 +339,15 @@ void updateEffectByButtons() {
         
         
         //CHECK IF OVERRIDER IS UP
-        if(buttons[OVERRIDER_PIN_INDEX] == LOW)
-        {
-          //Read the 3 sliders        
-          noInterrupts();
-          sliderA = analogRead(SLIDER_A_PIN);
-          sliderB = analogRead(SLIDER_B_PIN);
-          sliderC = analogRead(SLIDER_C_PIN);
-          interrupts();
-        }
+//        if(buttons[OVERRIDER_PIN_INDEX] == LOW)
+//        {
+//          //Read the 3 sliders        
+//          noInterrupts();
+//          sliderA = analogRead(SLIDER_A_PIN);
+//          sliderB = analogRead(SLIDER_B_PIN);
+//          sliderC = analogRead(SLIDER_C_PIN);
+//          interrupts();
+//        }
 }
 
 void switchColors() {

@@ -24,9 +24,9 @@ void ColorWipeEffect::setSourceColor(uint32_t color) {
 }
 
 void ColorWipeEffect::tick(void) {
-	callcounter++;
-	if (callcounter % (*globalSpeedFactor) != 0)
-	 	return;
+	// callcounter++;
+	// if (callcounter % (*globalSpeedFactor) != 0)
+	//  	return;
 	 
 	Section *sect = &sections[sectionsStart];
 	Adafruit_NeoPixel *strip = sect->strip;
