@@ -5,7 +5,6 @@
 #include <HeartBeatEffect.h>
 #include <GlowEffect.h>
 #include <Sabalib.h>
-#include <TimerThree.h>
 #include <NewPing.h>
 
 #define RIGHT_TORSO_HAND_STICK_PIN 3 //A
@@ -20,7 +19,7 @@
 #define COLORS_NUM 4
 
 //#define TIMER_INTERVAL 100000
-#define DEBUGI true
+#define DEBUGI false
 
 //#define OVERRIDER_PIN_INDEX 7
 //#define PUSHBUTTON_PIN_INDEX 8

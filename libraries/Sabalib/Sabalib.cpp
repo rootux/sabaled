@@ -9,7 +9,7 @@ uint8_t nextTransitionValue(uint8_t source, uint8_t destination, int forwardStep
 
 uint32_t SabaleUtils::globalSourceColorValue = Adafruit_NeoPixel::Color(255, 0, 0);
 uint32_t SabaleUtils::globalDestColorValue = Adafruit_NeoPixel::Color(0, 0, 255);
-uint32_t SabaleUtils::heartSourceColorValue = 0;
+uint32_t SabaleUtils::heartSourceColorValue = Adafruit_NeoPixel::Color(150,0,0);
 uint32_t SabaleUtils::heartDestColorValue = 0;
 uint32_t* SabaleUtils::globalSourceColor = &SabaleUtils::globalSourceColorValue;
 uint32_t* SabaleUtils::globalDestColor = &SabaleUtils::globalDestColorValue;

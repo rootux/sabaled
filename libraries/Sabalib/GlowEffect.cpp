@@ -12,9 +12,10 @@ GlowEffect::GlowEffect(Section *sections, int sectionsStart, int sectionsEnd)
 	strip->begin();
 	strip->show();
 
-	currentColorValue = (uint32_t) * SabaleUtils::globalSourceColor;
+	currentColorValue = (uint32_t) * SabaleUtils::heartSourceColor;
 	currentColor = &currentColorValue;
 	currentIndex = 0;
+	transitionStep = 4;
 }
 
 
@@ -27,17 +28,17 @@ void GlowEffect::tick(void) {
 	Adafruit_NeoPixel *strip = sect->strip;
 
 	boolean transitionComplete =
-			SabaleUtils::transitionStep(currentColor, SabaleUtils::globalDestColor, transitionStep, transitionStep);
+			SabaleUtils::transitionStep(currentColor, SabaleUtils::heartDestColor, transitionStep, transitionStep);
 
+
+	Serial.println(*currentColor);
 	if (transitionComplete) {
-		*currentColor = (uint32_t) * SabaleUtils::globalSourceColor;
+		*currentColor = (uint32_t) * SabaleUtils::heartSourceColor;
 	}
-
-	strip->setPixelColor(currentIndex, *currentColor);
+	
+	for(int i=0;i<strip->numPixels();i++) {
+	  strip->setPixelColor(i, *currentColor);
+	}
 	strip->show();
 
-	currentIndex++;
-	if(currentIndex == strip->numPixels()) {
-		currentIndex = 0;
-	}
 }
