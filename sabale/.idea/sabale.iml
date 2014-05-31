@@ -13,6 +13,12 @@
     <content url="file://$MODULE_DIR$/../libraries/Sabalib/ColorPulseEffect.h">
       <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/ColorPulseEffect.h" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/GlowEffect.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/GlowEffect.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../libraries/Sabalib/GlowEffect.h">
+      <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/GlowEffect.h" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../libraries/Sabalib/PulseEffect.cpp">
       <sourceFolder url="file://$MODULE_DIR$/../libraries/Sabalib/PulseEffect.cpp" isTestSource="false" />
     </content>

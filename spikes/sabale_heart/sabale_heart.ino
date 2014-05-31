@@ -5,6 +5,7 @@
 #define PIN3 5
 #define PIN4 6
 #define PIN5 7
+#define PIN6 3
 
 
 // Parameter 1 = number of pixels in strip
@@ -20,6 +21,7 @@ Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(960, PIN2, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel strip3 = Adafruit_NeoPixel(60, PIN3, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel strip4 = Adafruit_NeoPixel(60, PIN4, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel strip5 = Adafruit_NeoPixel(20, PIN5, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip6 = Adafruit_NeoPixel(200, PIN6, NEO_GRB + NEO_KHZ800);
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -32,19 +34,20 @@ void setup() {
   strip3.begin();
   strip4.begin();
   strip5.begin();
+  strip6.begin();
   strip.show(); // Initialize all pixels to 'off'
   strip2.show();
   strip3.show();  
   strip4.show(); 
   strip5.show();
-
+  strip6.show();
 }
 
 void loop() {
   // Some example procedures showing how to display to the pixels:
   colorWipe(strip.Color(255, 50, 0), 10);
-  colorWipe(strip.Color(191, 0, 255), 10);
-  colorWipe(strip.Color(130, 60, 110), 10);
+  colorWipe(strip.Color(191, 0, 255), 0);
+  colorWipe(strip.Color(130, 60, 110), 20);
   
   // Send a theater pixel chase in...
 //  theaterChase(strip.Color(127, 127, 127), 50); // White
@@ -77,6 +80,8 @@ void colorWipe(uint32_t c, uint8_t wait) {
       strip4.show();
       strip5.setPixelColor(i, c);
       strip5.show();
+      strip6.setPixelColor(i, c);
+      strip6.show();
       delay(wait);
   }
 
@@ -96,6 +101,13 @@ void colorWipe(uint32_t c, uint8_t wait) {
       strip2.show();
       strip2.setPixelColor(i*5, 0);
       strip2.show();
+      strip4.setPixelColor(i, 0);
+      strip4.show();
+
+      strip5.setPixelColor(i, 0);
+      strip5.show();
+            strip6.setPixelColor(i, 0);
+      strip6.show();
       delay(wait);
   }
 

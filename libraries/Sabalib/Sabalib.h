@@ -7,7 +7,27 @@
 class SabaleUtils {
 public:
 	static boolean transitionStep(uint32_t *src_color, uint32_t *dst_color, int forwardStep, int backwardsStep);
+
+	static int globalSpeedFactorValue;
+	static int* globalSpeedFactor;
+	static uint32_t globalSourceColorValue;
+	static uint32_t globalDestColorValue;
+	static uint32_t heartSourceColorValue;
+	static uint32_t heartDestColorValue;
+	static uint32_t* globalSourceColor;
+	static uint32_t* globalDestColor;
+	static uint32_t* heartSourceColor;
+	static uint32_t* heartDestColor;
 };
+
+// static uint32_t SabaleUtils::globalSourceColorValue;
+// static uint32_t SabaleUtils::globalDestColorValue;
+// static uint32_t SabaleUtils::heartSourceColorValue;
+// static uint32_t SabaleUtils::heartDestColorValue;
+// static uint32_t* SabaleUtils::globalSourceColor;
+// static uint32_t* SabaleUtils::globalDestColor;
+// static uint32_t* SabaleUtils::heartSourceColor;
+// static uint32_t* SabaleUtils::heartDestColor;
 
 class Section {
 public:

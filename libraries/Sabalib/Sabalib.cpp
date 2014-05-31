@@ -7,6 +7,19 @@ uint16_t BLUE_MASK = 0xFF;
 
 uint8_t nextTransitionValue(uint8_t source, uint8_t destination, int forwardStep, int backwardsStep);
 
+uint32_t SabaleUtils::globalSourceColorValue = Adafruit_NeoPixel::Color(255, 0, 0);
+uint32_t SabaleUtils::globalDestColorValue = Adafruit_NeoPixel::Color(0, 0, 255);
+uint32_t SabaleUtils::heartSourceColorValue = 0;
+uint32_t SabaleUtils::heartDestColorValue = 0;
+uint32_t* SabaleUtils::globalSourceColor = &SabaleUtils::globalSourceColorValue;
+uint32_t* SabaleUtils::globalDestColor = &SabaleUtils::globalDestColorValue;
+uint32_t* SabaleUtils::heartSourceColor = &SabaleUtils::heartSourceColorValue;
+uint32_t* SabaleUtils::heartDestColor = &SabaleUtils::heartDestColorValue;
+
+int SabaleUtils::globalSpeedFactorValue = 6;
+int* SabaleUtils::globalSpeedFactor = &globalSpeedFactorValue;
+
+
 boolean SabaleUtils::transitionStep(uint32_t *src_color, uint32_t *dst_color, int forwardStep, int backwardsStep) {
 	uint8_t r = (*src_color & RED_MASK) >> 16;
 	uint8_t g = (*src_color & GREEN_MASK) >> 8;

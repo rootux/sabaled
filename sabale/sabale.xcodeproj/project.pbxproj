@@ -9,7 +9,9 @@
 /* Begin PBXFileReference section */
 		C1AFB2A54540FFE453428832 /* ColorPulseEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ColorPulseEffect.cpp; path = ../libraries/Sabalib/ColorPulseEffect.cpp; sourceTree = "<group>"; };
 		C1AFB2BDD27AB0693DF3F366 /* PulseEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PulseEffect.cpp; path = ../libraries/Sabalib/PulseEffect.cpp; sourceTree = "<group>"; };
+		C1AFB3C04F765E254DD07800 /* GlowEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GlowEffect.cpp; path = ../libraries/Sabalib/GlowEffect.cpp; sourceTree = "<group>"; };
 		C1AFB4255E13533E5F0A31DF /* BaseEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseEffect.h; path = ../libraries/Sabalib/BaseEffect.h; sourceTree = "<group>"; };
+		C1AFB442BD55F39F198CDE61 /* GlowEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GlowEffect.h; path = ../libraries/Sabalib/GlowEffect.h; sourceTree = "<group>"; };
 		C1AFB6B791A518ADF5448BB2 /* sabale_interrupt_poc.ino */ = {isa = PBXFileReference; lastKnownFileType = file.ino; name = sabale_interrupt_poc.ino; path = ../spikes/sabale_interrupt_poc/sabale_interrupt_poc.ino; sourceTree = "<group>"; };
 		C1AFB8E11F82FA959BD977D5 /* BaseEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BaseEffect.cpp; path = ../libraries/Sabalib/BaseEffect.cpp; sourceTree = "<group>"; };
 		C1AFB90E1837182C19D059C9 /* PulseEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PulseEffect.h; path = ../libraries/Sabalib/PulseEffect.h; sourceTree = "<group>"; };
@@ -47,6 +49,8 @@
 				C1AFB8E11F82FA959BD977D5 /* BaseEffect.cpp */,
 				C1AFB2A54540FFE453428832 /* ColorPulseEffect.cpp */,
 				C1AFBCA7A86D867C9EFD3B18 /* ColorPulseEffect.h */,
+				C1AFB442BD55F39F198CDE61 /* GlowEffect.h */,
+				C1AFB3C04F765E254DD07800 /* GlowEffect.cpp */,
 			);
 			name = Sabalib;
 			sourceTree = "<group>";

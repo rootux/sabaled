@@ -4,7 +4,13 @@ BaseEffect::BaseEffect(Section *sections, int sectionsStart, int sectionsEnd,int
 	this->sections = sections;
 	this->sectionsStart = sectionsStart;
 	this->sectionsEnd = sectionsEnd;
-	this->globalSpeedFactor = globalSpeedFactor;
+
+	this->isHighRes = false;
+
+	// Back + head + beard || heart
+	if (sectionsStart == 4 || sectionsStart == 12) {
+		this->isHighRes = true;
+	}
 }
 
 BaseEffect::~BaseEffect() {

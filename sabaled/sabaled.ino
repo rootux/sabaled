@@ -3,6 +3,7 @@
 #include <ColorPulseEffect.h>
 #include <ColorWipeEffect.h>
 #include <HeartBeatEffect.h>
+#include <GlowEffect.h>
 #include <Sabalib.h>
 #include <TimerThree.h>
 #include <NewPing.h>
@@ -20,7 +21,7 @@
 
 //#define TIMER_INTERVAL 100000
 #define DEBUGI true
- 
+
 //#define OVERRIDER_PIN_INDEX 7
 //#define PUSHBUTTON_PIN_INDEX 8
 
@@ -52,7 +53,7 @@ unsigned int push_buttons[2];  // Holds the push buttons states
 uint32_t colors[COLORS_NUM];
 uint32_t currentColorIndex = 0;
 int gsf = 1024;
-int* globalSpeedFactor = &gsf;
+int *globalSpeedFactor = &gsf;
 
 uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
 
@@ -69,58 +70,60 @@ ColorPulseEffect *colorPulseEffect[PARTS_NUM];
 ColorWipeEffect *colorWipeEffect[PARTS_NUM];
 PulseEffect *pulseEffect[PARTS_NUM];
 HeartBeatEffect *heartBeatEffect[PARTS_NUM];
+GlowEffect *glowEffect[PARTS_NUM];
 
 void setup() {
-        if(DEBUGI) {
-	  Serial.begin(9600);
-        }
-        initPorts();
-        SerialPrint("Booting up...");
-        initColors();
-        SerialPrintln("Init colors success...");        
+	if (DEBUGI) {
+		Serial.begin(9600);
+	}
+	initPorts();
+	SerialPrint("Booting up...");
+	initColors();
+	SerialPrintln("Init colors success...");
 	//initSonars();
 	initSections();
-        SerialPrintln("Init sections success...");
-        testSabale();
+	SerialPrintln("Init sections success...");
+	testSabale();
 }
+
 void initPorts() {
-  pinMode(BTN_A_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(BTN_B_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(BTN_C_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(BTN_D_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+	pinMode(BTN_A_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+	pinMode(BTN_B_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+	pinMode(BTN_C_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+	pinMode(BTN_D_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
 //  pinMode(BTN_E_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
 //  pinMode(BTN_F_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
 //  pinMode(BTN_G_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(PUSH_BTN_A_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(PUSH_BTN_B_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-  pinMode(SLIDER_A_PIN, INPUT);    // sets the digital pin as input to read switch  
-  pinMode(SLIDER_B_PIN, INPUT);    // sets the digital pin as input to read switch    
-  pinMode(SLIDER_C_PIN, INPUT);    // sets the digital pin as input to read switch  
+	pinMode(PUSH_BTN_A_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+	pinMode(PUSH_BTN_B_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+	pinMode(SLIDER_A_PIN, INPUT);    // sets the digital pin as input to read switch
+	pinMode(SLIDER_B_PIN, INPUT);    // sets the digital pin as input to read switch
+	pinMode(SLIDER_C_PIN, INPUT);    // sets the digital pin as input to read switch
 }
 
-void SerialPrint(char* str) {
-  if(DEBUGI) {
-    Serial.print(str);
-  }
+void SerialPrint(char *str) {
+	if (DEBUGI) {
+		Serial.print(str);
+	}
 }
 
-void SerialPrintln(char* str) {
-  if(DEBUGI) {
-    Serial.println(str);
-  }
+void SerialPrintln(char *str) {
+	if (DEBUGI) {
+		Serial.println(str);
+	}
 }
 
 void SerialPrintln(int str) {
-  if(DEBUGI) {
-    Serial.println(str);
-  }
+	if (DEBUGI) {
+		Serial.println(str);
+	}
 }
 
 void initColors() {
-  colors[0] = Adafruit_NeoPixel::Color(255, 50, 0);
-  colors[1] = Adafruit_NeoPixel::Color(191, 0, 255);
-  colors[2] = Adafruit_NeoPixel::Color(130, 60, 110);  
-  colors[3] = Adafruit_NeoPixel::Color(21, 70, 92);    
+	colors[0] = Adafruit_NeoPixel::Color(255, 50, 0);
+	colors[1] = Adafruit_NeoPixel::Color(191, 0, 255);
+	colors[2] = Adafruit_NeoPixel::Color(130, 60, 110);
+	colors[3] = Adafruit_NeoPixel::Color(21, 70, 92);
 }
 
 //void initSonars(void) {
@@ -132,119 +135,121 @@ void initColors() {
 //}
 
 void initSections(void) {
-        uint8_t current_part = 0;
-        
+	uint8_t current_part = 0;
+
 	//RIGHT TORSO HAND STICK
-	strips[current_part] = new Adafruit_NeoPixel(200, RIGHT_TORSO_HAND_STICK_PIN, NEO_GRB + NEO_KHZ800);
-	sections[0]= Section(0, 49, strips[current_part]);
+	strips[current_part] = new Adafruit_NeoPixel(200, RIGHT_TORSO_HAND_STICK_PIN, NEO_BRG + NEO_KHZ800);
+	sections[0] = Section(0, 49, strips[current_part]);
 	sections[1] = Section(50, 99, strips[current_part]);
 	sections[2] = Section(100, 149, strips[current_part]);
 	sections[3] = Section(150, 199, strips[current_part]);
 
-        colorPulseEffect[current_part] = new ColorPulseEffect(sections, 0, 3,globalSpeedFactor);
-        pulseEffect[current_part] = new PulseEffect(sections,0,3, globalSpeedFactor);
-        heartBeatEffect[current_part] = new HeartBeatEffect(sections,0,3, globalSpeedFactor);
-        colorWipeEffect[current_part] = new ColorWipeEffect(sections,0,3, globalSpeedFactor);
-        
-        SerialPrintln("Right Torso Hand Stick inited...");
-        delay(50);
-        current_part++;
-        
+	colorPulseEffect[current_part] = new ColorPulseEffect(sections, 0, 3, 1);
+	pulseEffect[current_part] = new PulseEffect(sections, 0, 3, globalSpeedFactor);
+	heartBeatEffect[current_part] = new HeartBeatEffect(sections, 0, 3, globalSpeedFactor);
+        glowEffect[current_part] = new GlowEffect(sections, 0, 3);
+	colorWipeEffect[current_part] = new ColorWipeEffect(sections, 0, 3, globalSpeedFactor);
+
+	SerialPrintln("Right Torso Hand Stick inited...");
+	delay(50);
+	current_part++;
+
 	//CHEST HEAD BEARD
 	strips[current_part] = new Adafruit_NeoPixel(960, CHEST_HEAD_BEARD_PIN, NEO_GRB + NEO_KHZ800);
 	sections[4] = Section(0, 239, strips[current_part]);
 	sections[5] = Section(240, 479, strips[current_part]);
 	sections[6] = Section(480, 719, strips[current_part]);
 	sections[7] = Section(720, 959, strips[current_part]);
-        colorPulseEffect[current_part] = new ColorPulseEffect(sections, 4, 7, globalSpeedFactor);
-        pulseEffect[current_part] = new PulseEffect(sections,4,7, globalSpeedFactor);
-        heartBeatEffect[current_part] = new HeartBeatEffect(sections,4,7, globalSpeedFactor);
-        colorWipeEffect[current_part] = new ColorWipeEffect(sections,4,7, globalSpeedFactor);
-        
-        SerialPrintln("Chest Head Beard inited...");
-        delay(50);
-        current_part++;
+	colorPulseEffect[current_part] = new ColorPulseEffect(sections, 4, 7, 1);
+	pulseEffect[current_part] = new PulseEffect(sections, 4, 7, globalSpeedFactor);
+	heartBeatEffect[current_part] = new HeartBeatEffect(sections, 4, 7, globalSpeedFactor);
+	glowEffect[current_part] = new GlowEffect(sections, 4, 7);
+	colorWipeEffect[current_part] = new ColorWipeEffect(sections, 4, 7, globalSpeedFactor);
+
+	SerialPrintln("Chest Head Beard inited...");
+	delay(50);
+	current_part++;
 
 	//LEFT TORSO HAND
-	strips[current_part] = new Adafruit_NeoPixel(100, LEFT_TORSO_HAND_PIN, NEO_GRB + NEO_KHZ800);
+	strips[current_part] = new Adafruit_NeoPixel(100, LEFT_TORSO_HAND_PIN, NEO_BRG + NEO_KHZ800);
 	sections[8] = Section(0, 30, strips[current_part]);
 	sections[9] = Section(31, 49, strips[current_part]); //TODO: hack
-        colorPulseEffect[current_part] = new ColorPulseEffect(sections, 8, 9, globalSpeedFactor);
-        pulseEffect[current_part] = new PulseEffect(sections,8,9, globalSpeedFactor);
-        heartBeatEffect[current_part] = new HeartBeatEffect(sections,8,9, globalSpeedFactor);
-        colorWipeEffect[current_part] = new ColorWipeEffect(sections,8,9, globalSpeedFactor);
-        
-        SerialPrintln("Left torso hand inited...");
-        delay(50);
-        current_part++;
-        
-	//RIGHT LEG
-	strips[current_part] = new Adafruit_NeoPixel(50, RIGHT_LEG_PIN, NEO_GRB + NEO_KHZ800);
-	sections[10] = Section(0, 49, strips[current_part]);
-        colorPulseEffect[current_part] = new ColorPulseEffect(sections, 10,10, globalSpeedFactor);
-        pulseEffect[current_part] = new PulseEffect(sections,10,10, globalSpeedFactor);
-        heartBeatEffect[current_part] = new HeartBeatEffect(sections,10,10, globalSpeedFactor);
-        colorWipeEffect[current_part] = new ColorWipeEffect(sections,10,10, globalSpeedFactor);
-        
-        SerialPrintln("Right leg inited...");
-        delay(50);
-        current_part++;
-        
-	//LEFT LEG
-	strips[current_part] = new Adafruit_NeoPixel(50, LEFT_LEG_PIN, NEO_GRB + NEO_KHZ800);
-	sections[11] = Section(0, 49, strips[current_part]);
-        colorPulseEffect[current_part] = new ColorPulseEffect(sections, 11,11, globalSpeedFactor);
-        pulseEffect[current_part] = new PulseEffect(sections,11,11, globalSpeedFactor);    
-        heartBeatEffect[current_part] = new HeartBeatEffect(sections,11,11, globalSpeedFactor);
-        colorWipeEffect[current_part] = new ColorWipeEffect(sections,11,11, globalSpeedFactor);        
+	colorPulseEffect[current_part] = new ColorPulseEffect(sections, 8, 9, 1);
+	pulseEffect[current_part] = new PulseEffect(sections, 8, 9, globalSpeedFactor);
+	heartBeatEffect[current_part] = new HeartBeatEffect(sections, 8, 9, globalSpeedFactor);
+	glowEffect[current_part] = new GlowEffect(sections, 8, 9);
+	colorWipeEffect[current_part] = new ColorWipeEffect(sections, 8, 9, globalSpeedFactor);
 
-        SerialPrintln("Left leg inited...");
-        delay(50);
-        current_part++;
+	SerialPrintln("Left torso hand inited...");
+	delay(50);
+	current_part++;
+
+	//RIGHT LEG
+	strips[current_part] = new Adafruit_NeoPixel(50, RIGHT_LEG_PIN, NEO_BRG + NEO_KHZ800);
+	sections[10] = Section(0, 49, strips[current_part]);
+	colorPulseEffect[current_part] = new ColorPulseEffect(sections, 10, 10, 1);
+	pulseEffect[current_part] = new PulseEffect(sections, 10, 10, globalSpeedFactor);
+	heartBeatEffect[current_part] = new HeartBeatEffect(sections, 10, 10, globalSpeedFactor);
+	glowEffect[current_part] = new GlowEffect(sections, 10, 10);
+	colorWipeEffect[current_part] = new ColorWipeEffect(sections, 10, 10, globalSpeedFactor);
+
+	SerialPrintln("Right leg inited...");
+	delay(50);
+	current_part++;
+
+	//LEFT LEG
+	strips[current_part] = new Adafruit_NeoPixel(50, LEFT_LEG_PIN, NEO_BRG + NEO_KHZ800);
+	sections[11] = Section(0, 49, strips[current_part]);
+	colorPulseEffect[current_part] = new ColorPulseEffect(sections, 11, 11, 1);
+	pulseEffect[current_part] = new PulseEffect(sections, 11, 11, globalSpeedFactor);
+	heartBeatEffect[current_part] = new HeartBeatEffect(sections, 11, 11, globalSpeedFactor);
+	glowEffect[current_part] = new GlowEffect(sections, 11, 11);
+	colorWipeEffect[current_part] = new ColorWipeEffect(sections, 11, 11, globalSpeedFactor);
+
+	SerialPrintln("Left leg inited...");
+	delay(50);
+	current_part++;
 
 	//HEART
 	strips[current_part] = new Adafruit_NeoPixel(240, HEART_PIN, NEO_GRB + NEO_KHZ800);
 	sections[12] = Section(0, 239, strips[5]);
-        colorPulseEffect[current_part] = new ColorPulseEffect(sections, 12,12, globalSpeedFactor);
-        pulseEffect[current_part] = new PulseEffect(sections,12,12, globalSpeedFactor);
-        heartBeatEffect[current_part] = new HeartBeatEffect(sections,12,12, globalSpeedFactor);
-        colorWipeEffect[current_part] = new ColorWipeEffect(sections,12,12, globalSpeedFactor);
-        //colorPulseEffect->setSourceColor(Adafruit_NeoPixel::Color(10, 10, 10));
-        
-        SerialPrintln("Heart is pumping...");
-        delay(50);
-        current_part++;
+	colorPulseEffect[current_part] = new ColorPulseEffect(sections, 12, 12, 1);
+	pulseEffect[current_part] = new PulseEffect(sections, 12, 12, globalSpeedFactor);
+	heartBeatEffect[current_part] = new HeartBeatEffect(sections, 12, 12, globalSpeedFactor);
+	glowEffect[current_part] = new GlowEffect(sections, 12, 12);
+	colorWipeEffect[current_part] = new ColorWipeEffect(sections, 12, 12, globalSpeedFactor);
+	//colorPulseEffect->setSourceColor(Adafruit_NeoPixel::Color(10, 10, 10));
 
-}
+	SerialPrintln("Heart is pumping...");
+	delay(50);
+	current_part++;
 
-void tick() {
-  tickActiveProgram();
 }
 
 /**
 * Check that sabale has all his parts
 */
 void testSabale() {
-  SerialPrintln("Starting test");
-  delay(50);
-  for(int i=0; i< PARTS_NUM;i++) {
-      SerialPrint("Testing part:");
-      SerialPrintln(i);
-      
-     strips[i]->begin();
-     strips[i]->show();
-     for(int j=0;j<strips[i]->numPixels();j++) {
-       strips[i]->setPixelColor(j, colors[0]);
-     }
-     strips[i]->show();
-     delay(500);
-     //clear
-     for(int j=0;j<strips[i]->numPixels();j++) {
-       strips[i]->setPixelColor(j, 0);
-     }
-     strips[i]->show();
-  }
-  SerialPrint("Test success! go saba go!");
+	SerialPrintln("Starting test");
+	delay(50);
+	for (int i = 0; i < PARTS_NUM; i++) {
+		SerialPrint("Testing part:");
+		SerialPrintln(i);
+
+		strips[i]->begin();
+		strips[i]->show();
+		for (int j = 0; j < strips[i]->numPixels(); j++) {
+			strips[i]->setPixelColor(j, colors[0]);
+		}
+		strips[i]->show();
+		delay(500);
+		//clear
+		for (int j = 0; j < strips[i]->numPixels(); j++) {
+			strips[i]->setPixelColor(j, 0);
+		}
+		strips[i]->show();
+	}
+	SerialPrint("Test success! go saba go!");
 }
 
 void tickActiveProgram(void) {
@@ -254,27 +259,31 @@ void tickActiveProgram(void) {
 			break;
 		case 1: //Only Heart
 			SerialPrintln("Only Heart");
-                        heartBeatEffect[5]->tick();
-                        //pulseEffect->tick();
-                        //for (int i=0;i<PARTS_NUM;i++) {
-                          //colorPulseEffect[i]->tick();
-                        //}
+			heartBeatEffect[5]->tick();
+			//pulseEffect->tick();
+			//for (int i=0;i<PARTS_NUM;i++) {
+			//colorPulseEffect[i]->tick();
+			//}
 			break;
-			
-		case 2: //PULSE
-                        SerialPrintln("Pulse");
-                        //colorPulseEffect[5]->tick();
-		        //SerialPrintln("Pulse");
-                        for (int i=0;i<PARTS_NUM;i++) {
-                          //pulseEffect[i]->tick();
-			  colorPulseEffect[i]->tick();
-                            //heartBeatEffect[i]->tick();
-                            
-                        }
+
+		case 2: //COLOR PULSE
+			SerialPrintln("Color Pulse");
+
+			//colorPulseEffect[5]->tick();
+//			colorPulseEffect[4]->tick();
+			//SerialPrintln("Pulse");
+			for (int i = 0; i < PARTS_NUM; i++) {
+				// Heart
+				if (i == 5) {
+					glowEffect[i]->tick();
+				} else {
+					colorPulseEffect[i]->tick();
+				}
+			}
 			break;
 		case 3:  //Fireworks
 			SerialPrintln("Fireworks");
-                        colorWipeEffect[5]->tick();
+			colorWipeEffect[5]->tick();
 			break;
 		case 4: //BTN_ELECTIC_SHOCK_PIN
 			SerialPrintln("Electric Shock");
@@ -282,9 +291,9 @@ void tickActiveProgram(void) {
 		case 5: //BTN_ELECTRIC_SPARKS_PIN
 			SerialPrintln("Electric Sparks");
 			break;
-			
+
 		case 6: //BTN_OVERRIDER_PIN
-                        SerialPrintln("Overrider");
+			SerialPrintln("Overrider");
 //                        currentColor = colors[(currentColorIndex % 4)];
 //                        currentColorIndex++;
 //                        for(int i=0;i<PARTS_NUM;i++) {
@@ -295,10 +304,10 @@ void tickActiveProgram(void) {
 }
 
 void loop() {
-  updateEffectByButtons();
-  tick();
-  //loopSonars();
-  //delay(1000);
+	updateEffectByButtons();
+	tickActiveProgram();
+	//loopSonars();
+	//delay(1000);
 }
 
 
@@ -308,13 +317,13 @@ void updateEffectByButtons() {
 	for (int i = 0; i < BUTTONS_NUM; i++) {
 		int newState = digitalRead(BTN_A_PIN + i);
 		if (buttons[i] == newState)
-		  continue;
-                                
-                // the button state has changed!
+			continue;
+
+		// the button state has changed!
 		buttons[i] = newState;
-                // check if the button is pressed
+		// check if the button is pressed
 		if (newState == LOW) {
-		        SerialPrintln("Button just pressed");
+			SerialPrintln("Button just pressed");
 			noInterrupts();
 			activeEffect = i;
 			interrupts();
@@ -324,21 +333,21 @@ void updateEffectByButtons() {
 		}
 	}
 
-        //Check push buttons
-        for(int i=0;i<2;i++) {
-          int newState = digitalRead(PUSH_BTN_A_PIN + i);
-	  if (push_buttons[i] == newState)
-              continue;
+	//Check push buttons
+	for (int i = 0; i < 2; i++) {
+		int newState = digitalRead(PUSH_BTN_A_PIN + i);
+		if (push_buttons[i] == newState)
+			continue;
 
-          // push button state has changed!
-          push_buttons[i] = newState;
-          if(newState == LOW) {
-             switchColors();
-          }
-        }
-        
-        
-        //CHECK IF OVERRIDER IS UP
+		// push button state has changed!
+		push_buttons[i] = newState;
+		if (newState == LOW) {
+			switchColors();
+		}
+	}
+
+
+	//CHECK IF OVERRIDER IS UP
 //        if(buttons[OVERRIDER_PIN_INDEX] == LOW)
 //        {
 //          //Read the 3 sliders        
@@ -351,15 +360,14 @@ void updateEffectByButtons() {
 }
 
 void switchColors() {
-  SerialPrintln("Switching colors");
-  uint32_t currentColor = colors[(currentColorIndex % COLORS_NUM)];
-  currentColorIndex++;
-  for(int i=0; i<PARTS_NUM;i++) {
-    colorPulseEffect[i]->setSourceColor(currentColor);
-    pulseEffect[i]->setSourceColor(currentColor);
-    heartBeatEffect[i]->setSourceColor(currentColor);
-    colorWipeEffect[i]->setSourceColor(currentColor);
-  }
+//	SerialPrintln("Switching colors");
+//	uint32_t currentColor = colors[(currentColorIndex % COLORS_NUM)];
+//	currentColorIndex++;
+//	for (int i = 0; i < PARTS_NUM; i++) {
+//		pulseEffect[i]->setSourceColor(currentColor);
+//		heartBeatEffect[i]->setSourceColor(currentColor);
+//		colorWipeEffect[i]->setSourceColor(currentColor);
+//	}
 }
 
 //void loopSonars() {
@@ -390,6 +398,22 @@ void switchColors() {
 //	}
 //	Serial.println();
 //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

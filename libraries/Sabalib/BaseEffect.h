@@ -16,8 +16,8 @@ protected:
 	Section *sections;
 	int sectionsStart;
 	int sectionsEnd;
-	int callcounter;
-	int* globalSpeedFactor;
+	int callCounter;
+	bool isHighRes;
 };
 
 #endif // BASEEFFECT_H

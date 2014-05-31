@@ -6,7 +6,8 @@
 
 class ColorPulseEffect : public BaseEffect {
 public:
-	ColorPulseEffect(Section *section, int sectionsStart, int sectionsEnd, int* globalSpeedFactor);
+	ColorPulseEffect(Section *sections,
+			int sectionsStart, int sectionsEnd, int direction);
 
 	~ColorPulseEffect();
 
@@ -19,8 +20,15 @@ private:
 	uint32_t dest_color_value;
 	uint32_t *source_color;
 	uint32_t *dest_color;
+	int callCounter;
+	int slowDownFactor;
+	int direction;
 	int colorPulseCurrentIndex;
-	int colorPulseTransitionStep;
+	int transitionStep;
+
+	void tickBackwards();
+
+	void tickForward();
 };
 
 #endif // COLORPULSEFFECT_H
