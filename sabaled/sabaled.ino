@@ -19,8 +19,7 @@
 #define COLORS_NUM 4
 #define EFFECTS_NUM 6
 
-//#define TIMER_INTERVAL 100000
-#define DEBUGI true
+#define DEBUGI false
 
 //#define OVERRIDER_PIN_INDEX 7
 //#define PUSHBUTTON_PIN_INDEX 8
@@ -61,7 +60,7 @@ int *globalSpeedFactor = &gsf;
 
 uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
 
-volatile uint32_t activeEffect = 2;
+volatile uint32_t activeEffect = 0;
 
 //NewPing sonar[SONAR_NUM] = {     // Sensor object array.
 //		NewPing(10, 11, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
@@ -77,7 +76,7 @@ HeartBeatEffect *heartBeatEffect[PARTS_NUM];
 GlowEffect *glowEffect[PARTS_NUM];
 
 void setup() {
-	if (DEBUGI) {
+	 if (DEBUGI) {
 		Serial.begin(9600);
 	}
 	initPorts();
@@ -102,19 +101,19 @@ void initPorts() {
 }
 
 void SerialPrint(char *str) {
-	if (DEBUGI) {
+	 if (DEBUGI) {
 		Serial.print(str);
 	}
 }
 
 void SerialPrintln(char *str) {
-	if (DEBUGI) {
+	 if (DEBUGI) {
 		Serial.println(str);
 	}
 }
 
 void SerialPrintln(int str) {
-	if (DEBUGI) {
+	 if (DEBUGI) {
 		Serial.println(str);
 	}
 }
@@ -143,7 +142,7 @@ void initSections(void) {
 	uint8_t current_part = 0;
 
 	//RIGHT TORSO HAND STICK
-	strips[current_part] = new Adafruit_NeoPixel(200, RIGHT_TORSO_HAND_STICK_PIN, NEO_BRG + NEO_KHZ800);
+	strips[current_part] = new Adafruit_NeoPixel(150, RIGHT_TORSO_HAND_STICK_PIN, NEO_BRG + NEO_KHZ800);
 	sections[0] = Section(0, 49, strips[current_part]);
 	sections[1] = Section(50, 99, strips[current_part]);
 	sections[2] = Section(100, 149, strips[current_part]);
@@ -260,8 +259,11 @@ void testSabale() {
 void tickActiveProgram(void) {
 	switch (activeEffect) {
 		case 0: //REVERSE PULSE
-			SerialPrintln("Reverse Pulse");
-			break;
+		      SerialPrintln("Reverse Pulse");
+                      for(int i = 0; i< PARTS_NUM; i++) {
+                         colorPulseEffect[i]->tick();
+                      }
+		      break;
 		case 1: //Only Heart
 			SerialPrintln("Only Heart");
 			heartBeatEffect[5]->tick();
@@ -272,13 +274,14 @@ void tickActiveProgram(void) {
 			break;
 
 		case 2: //COLOR PULSE
-			SerialPrintln("Color Pulse");
-			//colorPulseEffect[5]->tick();
-//			colorPulseEffect[4]->tick();
-			for (int i = 0; i < PARTS_NUM; i++) {
+		      SerialPrintln("Color Pulse");
+                      for(int i = 0; i< PARTS_NUM; i++) {
+                         colorPulseEffect[i]->setDirection(0); 
+                      }
+		      for (int i = 0; i < PARTS_NUM; i++) {
 				// Heart
-				if (i == 5) {
-					glowEffect[i]->tick();
+			   if (i == 5) {
+			    glowEffect[i]->tick();
 				} else {
 					colorPulseEffect[i]->tick();
 				}
@@ -286,7 +289,9 @@ void tickActiveProgram(void) {
 			break;
 		case 3:  //Fireworks
 			SerialPrintln("Fireworks");
-			colorWipeEffect[5]->tick();
+                        for (int i = 0; i < PARTS_NUM; i++) {
+			  colorWipeEffect[i]->tick();
+                        }
 			break;
 		case 4: //BTN_ELECTIC_SHOCK_PIN
 			SerialPrintln("Electric Shock");
@@ -310,18 +315,18 @@ void updateEffectByButtons() {
 	//Remember that there is also on/off button
 	for (int i = 0; i < BUTTONS_NUM; i++) {
 		int newState = digitalRead(BTN_A_PIN + i);
-		if (buttons[i] == newState)
+		 if (buttons[i] == newState)
 			continue;
                 
 		// the button state has changed!
 		buttons[i] = newState;
 
-                if(i==0) {
+                if (i==0) {
                    switchColorsGlobal(); 
                 }else if(i==1) {
                    switchColorsHeart();
                 }
-		// check if the button is pressed
+		// check  the button is pressed
 		if (newState == LOW) {
 			SerialPrintln("Button just pressed");	
 			break;
@@ -333,7 +338,7 @@ void updateEffectByButtons() {
 	//Check push buttons
 	for (int i = 0; i < 2; i++) {
 		int newState = digitalRead(PUSH_BTN_A_PIN + i);
-		if (push_buttons[i] == newState)
+		 if (push_buttons[i] == newState)
 			continue;
 
 		// push button state has changed!
@@ -355,29 +360,40 @@ void switchToNextEffect() {
   activeEffect++;
   activeEffect = activeEffect % EFFECTS_NUM;
   
+  //setup for effects:
+  if (activeEffect == 0) { //reverse
+    for(int i=0; i<PARTS_NUM; i++) {
+      colorPulseEffect[i]->setDirection(1);
+    }
+  }else if (activeEffect == 2) {
+    for(int i=0; i<PARTS_NUM; i++) {
+      colorPulseEffect[i]->setDirection(0);
+    }
+  }
+  
 }
 
 void switchColorsGlobal() {
-	SerialPrintln("Switching colors");
-	uint32_t currentColor = colors[(currentColorIndex % COLORS_NUM)];
-	currentColorIndex++;
-	SabaleUtils::globalSourceColorValue = currentColor;
-        SabaleUtils::globalSourceColor = &SabaleUtils::globalSourceColorValue; //TODO: not sure if needed
+//	SerialPrintln("Switching colors");
+//	uint32_t currentColor = colors[(currentColorIndex % COLORS_NUM)];
+//	currentColorIndex++;
+//	SabaleUtils::globalSourceColorValue = currentColor;
+//        SabaleUtils::globalSourceColor = &SabaleUtils::globalSourceColorValue; //TODO: not sure  needed
 }
 
 void switchColorsHeart() {
-	SerialPrintln("Switching Heart colors");
-	uint32_t currentHeartColor = heartColors[(currentHeartColorIndex % COLORS_NUM)];
-	currentHeartColorIndex++;
-	SabaleUtils::heartSourceColorValue = currentHeartColor;
-        SabaleUtils::heartSourceColor = &SabaleUtils::heartSourceColorValue; //TODO: not sure if needed
+//	SerialPrintln("Switching Heart colors");
+//	uint32_t currentHeartColor = heartColors[(currentHeartColorIndex % COLORS_NUM)];
+//	currentHeartColorIndex++;
+//	SabaleUtils::heartSourceColorValue = currentHeartColor;
+//        SabaleUtils::heartSourceColor = &SabaleUtils::heartSourceColorValue; //TODO: not sure  needed
 }
 
 //void loopSonars() {
 //	for (uint8_t i = 0; i < SONAR_NUM; i++) { // Loop through all the sensors.
-//		if (millis() >= pingTimer[i]) {         // Is it this sensor's time to ping?
+//		 if (millis() >= pingTimer[i]) {         // Is it this sensor's time to ping?
 //              	        pingTimer[i]+= PING_INTERVAL * SONAR_NUM;  // Set next time this sensor will be pinged.
-//			if (i == 0 && currentSensor == SONAR_NUM - 1) oneSensorCycle(); // Sensor ping cycle complete, do something with the results.
+//			 (i == 0 && currentSensor == SONAR_NUM - 1) oneSensorCycle(); // Sensor ping cycle complete, do something with the results.
 //                        sonars[currentSensor] = sonar[i].ping() / US_ROUNDTRIP_CM;
 //			//sonar[currentSensor].timer_stop();          // Make sure previous timer is canceled before starting a new ping (insurance).
 //			currentSensor = i;                          // Sensor being accessed.
@@ -387,8 +403,8 @@ void switchColorsHeart() {
 //	}
 //}
 
-//void echoCheck() { // If ping received, set the sensor distance to array.
-//	if (sonar[currentSensor].check_timer())
+//void echoCheck() { //  ping received, set the sensor distance to array.
+//	 if (sonar[currentSensor].check_timer())
 //		sonars[currentSensor] = sonar[currentSensor].ping_result / US_ROUNDTRIP_CM;
 //}
 

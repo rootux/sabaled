@@ -12,12 +12,13 @@
 #include <Adafruit_NeoPixel.h>
 
 #define SONAR_NUM     1 // Number or sensors.
-#define MAX_DISTANCE 100 // Maximum distance (in cm) to ping.
+#define MAX_DISTANCE 250// Maximum distance (in cm) to ping.
 #define PING_INTERVAL 400 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
 
 #define LED_STRIP_1 8
 
 #define COLORS_NUM 2
+#define WAITI 10
 
 uint32_t colors[COLORS_NUM];
 uint32_t currentColorIndex = 0;
@@ -26,7 +27,7 @@ unsigned long pingTimer[SONAR_NUM]; // Holds the times when the next ping should
 unsigned int cm[SONAR_NUM];         // Where the ping distances are stored.
 uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
 uint32_t lastBrightness = 255;
-uint8_t lastBrightnessStep = 40;
+uint8_t lastBrightnessStep = 20;
 
 NewPing sonar[SONAR_NUM] = {     // Sensor object array.
   NewPing(10, 11, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
@@ -51,8 +52,9 @@ void setup() {
 }
 
 void initColors() {
-	colors[0] = Adafruit_NeoPixel::Color(200, 50, 0);
-	colors[1] = Adafruit_NeoPixel::Color(170, 50, 0);
+	colors[0] = Adafruit_NeoPixel::Color(130, 60, 110);
+	colors[1] = Adafruit_NeoPixel::Color(130, 60, 110);
+//	colors[1] = Adafruit_NeoPixel::Color(21, 70, 92);
 //	colors[2] = Adafruit_NeoPixel::Color(130, 60, 110);
 //	colors[3] = Adafruit_NeoPixel::Color(21, 70, 92);
 }
@@ -85,7 +87,7 @@ void oneSensorCycle() { // Sensor ping cycle complete, do something with the res
 //    }
 
   uint32_t currentColor = getNextColor();
-  portal(currentColor, 1);
+  portal(currentColor, WAITI);
     
     
 //    Serial.print(i);
@@ -106,7 +108,8 @@ uint32_t getNextColor() {
 void portal(uint32_t c, uint8_t wait) {  
   uint16_t numOfPixels = strip.numPixels();
   
-  float normalize = float(cm[0] / (float)numOfPixels); //0..1
+
+  float normalize = float(cm[0] / (float)numOfPixels / 10.0); //0..1
     //Serial.print("Normalize");
     //Serial.println(normalize);
     
@@ -119,18 +122,18 @@ void portal(uint32_t c, uint8_t wait) {
   //unsigned int pixelsToLight = cm[0] / 2;
   uint16_t startPixel = (numOfPixels/2) - (pixelsToLight / 2);
 
-  Serial.print("Lighting");
-  Serial.print(pixelsToLight);
-  Serial.println(" Pixels. Starting with:");
-   Serial.println(startPixel);
-   
+//  Serial.print("Lighting");
+//  Serial.print(pixelsToLight);
+//  Serial.println(" Pixels. Starting with:");
+//   Serial.println(startPixel);
+//   
     for(uint16_t i=startPixel; i<=(startPixel+pixelsToLight); i++) {
       strip.setPixelColor(i, c);
     }
     
     lastBrightness -= lastBrightnessStep;
     strip.setBrightness(lastBrightness);
-    //make outside pixels less bright
+    //make outside pixels l  ess bright
     for(uint16_t i=0;i<startPixel;i++) {
       strip.setPixelColor(i, strip.getPixelColor(i));
     }
@@ -139,4 +142,5 @@ void portal(uint32_t c, uint8_t wait) {
     }
 
   strip.show();
+  delay(wait);
 }

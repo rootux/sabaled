@@ -48,6 +48,10 @@ void ColorPulseEffect::tick(void) {
 	}
 }
 
+void ColorPulseEffect::setDirection(int direction) {
+	this->direction = direction;
+}
+
 void ColorPulseEffect::tickBackwards() {
 
 //	callcounter++;
@@ -110,7 +114,6 @@ void ColorPulseEffect::tickForward() {
 	// strip we should start from the source, and change the color to be the
 	// most distinct (equal to destination color) at the farthest point
 	int tempIndex = colorPulseCurrentIndex;
-
 	uint32_t tempColorValue = (uint32_t) * SabaleUtils::globalSourceColor;
 	uint32_t *tempColor = &tempColorValue;
 	bool innerTransitionComplete = false;

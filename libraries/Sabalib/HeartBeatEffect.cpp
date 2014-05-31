@@ -9,7 +9,6 @@ HeartBeatEffect::HeartBeatEffect(Section *sections, int sectionsStart, int secti
 	strip->begin();
 	strip->show();
 
-	setSourceColor(Adafruit_NeoPixel::Color(255, 50, 0));
 	this->currentIndex = 0;
 	this->currentStep = 5;
 	this->currentBrightness = strip->numPixels();
@@ -33,7 +32,7 @@ void HeartBeatEffect::tick(void) {
 	Adafruit_NeoPixel *strip = sect->strip;
 
 	int tempIndex = currentIndex;
-	uint32_t tempColorValue = (uint32_t)*source_color;
+	uint32_t tempColorValue = (uint32_t)*SabaleUtils::globalSourceColor;
 	uint32_t *tempColor = &tempColorValue;
 
 	
