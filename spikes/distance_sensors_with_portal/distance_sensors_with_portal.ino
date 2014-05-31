@@ -12,12 +12,12 @@
 #include <Adafruit_NeoPixel.h>
 
 #define SONAR_NUM     1 // Number or sensors.
-#define MAX_DISTANCE 250 // Maximum distance (in cm) to ping.
-#define PING_INTERVAL 200 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
+#define MAX_DISTANCE 100 // Maximum distance (in cm) to ping.
+#define PING_INTERVAL 400 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
 
-#define LED_STRIP_1 6
+#define LED_STRIP_1 8
 
-#define COLORS_NUM 4
+#define COLORS_NUM 2
 
 uint32_t colors[COLORS_NUM];
 uint32_t currentColorIndex = 0;
@@ -26,12 +26,14 @@ unsigned long pingTimer[SONAR_NUM]; // Holds the times when the next ping should
 unsigned int cm[SONAR_NUM];         // Where the ping distances are stored.
 uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
 uint32_t lastBrightness = 255;
+uint8_t lastBrightnessStep = 40;
+
 NewPing sonar[SONAR_NUM] = {     // Sensor object array.
   NewPing(10, 11, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
   //NewPing(3, 2, MAX_DISTANCE)
 };
 
-Adafruit_NeoPixel strip(250, LED_STRIP_1, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(20, LED_STRIP_1, NEO_GRB + NEO_KHZ800);
 
 long randRNumber;
 long randGNumber;
@@ -40,13 +42,20 @@ long randBNumber;
 
 void setup() {
   Serial.begin(115200);
+  initColors();
   strip.begin();
-//  strip.show();
+  strip.show();
   pingTimer[0] = millis() + 75;           // First ping starts at 75ms, gives time for the Arduino to chill before starting.
   for (uint8_t i = 1; i < SONAR_NUM; i++) // Set the starting time for each sensor.
     pingTimer[i] = pingTimer[i - 1] + PING_INTERVAL;
 }
 
+void initColors() {
+	colors[0] = Adafruit_NeoPixel::Color(200, 50, 0);
+	colors[1] = Adafruit_NeoPixel::Color(170, 50, 0);
+//	colors[2] = Adafruit_NeoPixel::Color(130, 60, 110);
+//	colors[3] = Adafruit_NeoPixel::Color(21, 70, 92);
+}
 void loop() {
   for (uint8_t i = 0; i < SONAR_NUM; i++) { // Loop through all the sensors.
     if (millis() >= pingTimer[i]) {         // Is it this sensor's time to ping?
@@ -76,15 +85,15 @@ void oneSensorCycle() { // Sensor ping cycle complete, do something with the res
 //    }
 
   uint32_t currentColor = getNextColor();
-  portal(currentColor, 1); // Red
+  portal(currentColor, 1);
     
     
-    Serial.print(i);
-    Serial.print("=");
-    Serial.print(cm[i]);
-    Serial.print("cm ");
+//    Serial.print(i);
+//    Serial.print("=");
+//    Serial.print(cm[i]);
+//    Serial.print("cm ");
   }
-  Serial.println();
+  //Serial.println();
 }
 
 uint32_t getNextColor() {
@@ -97,18 +106,19 @@ uint32_t getNextColor() {
 void portal(uint32_t c, uint8_t wait) {  
   uint16_t numOfPixels = strip.numPixels();
   
-  //float normalize = float(cm[0] / numOfPixels); //0..1
-//    Serial.print("Normalize");
-//    Serial.println(normalize);
+  float normalize = float(cm[0] / (float)numOfPixels); //0..1
+    //Serial.print("Normalize");
+    //Serial.println(normalize);
     
-  //unsigned int pixelsToLight = numOfPixels - (normalize * (float)numOfPixels); //reverse it
-  //if(pixelsToLight <0)
-    //pixelsToLight = 0;
+  int pixelsToLight = numOfPixels - (normalize * (float)numOfPixels); //reverse it
+  if(pixelsToLight <0)
+    pixelsToLight = 0;
 
 //      Serial.print("PixelsToLight2");
 //  Serial.println(pixelsToLight2);
-  unsigned int pixelsToLight = cm[0] / 2;
+  //unsigned int pixelsToLight = cm[0] / 2;
   uint16_t startPixel = (numOfPixels/2) - (pixelsToLight / 2);
+
   Serial.print("Lighting");
   Serial.print(pixelsToLight);
   Serial.println(" Pixels. Starting with:");
@@ -117,7 +127,8 @@ void portal(uint32_t c, uint8_t wait) {
     for(uint16_t i=startPixel; i<=(startPixel+pixelsToLight); i++) {
       strip.setPixelColor(i, c);
     }
-    lastBrightness -= 20;
+    
+    lastBrightness -= lastBrightnessStep;
     strip.setBrightness(lastBrightness);
     //make outside pixels less bright
     for(uint16_t i=0;i<startPixel;i++) {

@@ -14,28 +14,30 @@
 #define RIGHT_LEG_PIN 7 //E
 #define HEART_PIN 8 //F
 
-#define BUTTONS_NUM 4
+#define BUTTONS_NUM 2
 #define PARTS_NUM 6
 #define COLORS_NUM 4
+#define EFFECTS_NUM 6
 
 //#define TIMER_INTERVAL 100000
-#define DEBUGI false
+#define DEBUGI true
 
 //#define OVERRIDER_PIN_INDEX 7
 //#define PUSHBUTTON_PIN_INDEX 8
 
 #define BTN_A_PIN 47 //BTN_3 //47
 #define BTN_B_PIN 48 //BTN_4 //48
-#define BTN_C_PIN 49 //BTN_5 //49
-#define BTN_D_PIN 50 //BTN_6 //50
+//#define BTN_C_PIN 49 //BTN_5 //49
+//#define BTN_D_PIN 50 //BTN_6 //50
 //#define BTN_E_PIN 27 //EMPTY
 //#define BTN_F_PIN 28 //EMPTY
 //#define BTN_G_PIN 29 
-#define PUSH_BTN_A_PIN 51 //PUSH_BTN_1 //51 
-#define PUSH_BTN_B_PIN 52 //PUSH_BTN_2 //52
-#define SLIDER_A_PIN 32
-#define SLIDER_B_PIN 33
-#define SLIDER_C_PIN 34
+#define PUSH_BTN_A_PIN 50 //PUSH_BTN_1 //51 
+#define PUSH_BTN_B_PIN 51 //PUSH_BTN_2 //52
+
+#define SLIDER_A_PIN 0
+#define SLIDER_B_PIN 1
+#define SLIDER_C_PIN 2
 
 uint32_t sliderA = 0;
 uint32_t sliderB = 0;
@@ -50,13 +52,16 @@ unsigned int sonars[SONAR_NUM];     // Where the ping distances are stored.
 unsigned int buttons[BUTTONS_NUM];  // Holds the buttons states
 unsigned int push_buttons[2];  // Holds the push buttons states
 uint32_t colors[COLORS_NUM];
+uint32_t heartColors[COLORS_NUM];
 uint32_t currentColorIndex = 0;
+uint32_t currentHeartColorIndex = 0;
+
 int gsf = 1024;
 int *globalSpeedFactor = &gsf;
 
 uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
 
-volatile int activeEffect = 2;
+volatile uint32_t activeEffect = 2;
 
 //NewPing sonar[SONAR_NUM] = {     // Sensor object array.
 //		NewPing(10, 11, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
@@ -65,7 +70,7 @@ volatile int activeEffect = 2;
 
 Section sections[13];
 Adafruit_NeoPixel *strips[PARTS_NUM];
-ColorPulseEffect *colorPulseEffect[PARTS_NUM];
+ColorPulseEffect* colorPulseEffect[PARTS_NUM];
 ColorWipeEffect *colorWipeEffect[PARTS_NUM];
 PulseEffect *pulseEffect[PARTS_NUM];
 HeartBeatEffect *heartBeatEffect[PARTS_NUM];
@@ -86,18 +91,14 @@ void setup() {
 }
 
 void initPorts() {
-	pinMode(BTN_A_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-	pinMode(BTN_B_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-	pinMode(BTN_C_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-	pinMode(BTN_D_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-//  pinMode(BTN_E_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-//  pinMode(BTN_F_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-//  pinMode(BTN_G_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-	pinMode(PUSH_BTN_A_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-	pinMode(PUSH_BTN_B_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
-	pinMode(SLIDER_A_PIN, INPUT);    // sets the digital pin as input to read switch
-	pinMode(SLIDER_B_PIN, INPUT);    // sets the digital pin as input to read switch
-	pinMode(SLIDER_C_PIN, INPUT);    // sets the digital pin as input to read switch
+	pinMode(BTN_A_PIN, INPUT_PULLUP);
+	pinMode(BTN_B_PIN, INPUT_PULLUP);
+//	pinMode(BTN_C_PIN, INPUT_PULLUP);    // sets the digital pin as input to read switch
+	pinMode(PUSH_BTN_A_PIN, INPUT_PULLUP);
+	pinMode(PUSH_BTN_B_PIN, INPUT_PULLUP);
+	pinMode(SLIDER_A_PIN, INPUT);
+	pinMode(SLIDER_B_PIN, INPUT);
+	pinMode(SLIDER_C_PIN, INPUT);
 }
 
 void SerialPrint(char *str) {
@@ -123,6 +124,11 @@ void initColors() {
 	colors[1] = Adafruit_NeoPixel::Color(191, 0, 255);
 	colors[2] = Adafruit_NeoPixel::Color(130, 60, 110);
 	colors[3] = Adafruit_NeoPixel::Color(21, 70, 92);
+        
+        heartColors[0] = Adafruit_NeoPixel::Color(255, 50, 0);
+	heartColors[1] = Adafruit_NeoPixel::Color(191, 0, 255);
+	heartColors[2] = Adafruit_NeoPixel::Color(130, 60, 110);
+	heartColors[3] = Adafruit_NeoPixel::Color(21, 70, 92);      
 }
 
 //void initSonars(void) {
@@ -267,10 +273,8 @@ void tickActiveProgram(void) {
 
 		case 2: //COLOR PULSE
 			SerialPrintln("Color Pulse");
-
 			//colorPulseEffect[5]->tick();
 //			colorPulseEffect[4]->tick();
-			//SerialPrintln("Pulse");
 			for (int i = 0; i < PARTS_NUM; i++) {
 				// Heart
 				if (i == 5) {
@@ -290,15 +294,6 @@ void tickActiveProgram(void) {
 		case 5: //BTN_ELECTRIC_SPARKS_PIN
 			SerialPrintln("Electric Sparks");
 			break;
-
-		case 6: //BTN_OVERRIDER_PIN
-			SerialPrintln("Overrider");
-//                        currentColor = colors[(currentColorIndex % 4)];
-//                        currentColorIndex++;
-//                        for(int i=0;i<PARTS_NUM;i++) {
-//                          colorPulseEffect[i]->setSourceColor(currentColor);
-//                        }
-			break;
 	}
 }
 
@@ -317,15 +312,18 @@ void updateEffectByButtons() {
 		int newState = digitalRead(BTN_A_PIN + i);
 		if (buttons[i] == newState)
 			continue;
-
+                
 		// the button state has changed!
 		buttons[i] = newState;
+
+                if(i==0) {
+                   switchColorsGlobal(); 
+                }else if(i==1) {
+                   switchColorsHeart();
+                }
 		// check if the button is pressed
 		if (newState == LOW) {
-			SerialPrintln("Button just pressed");
-			noInterrupts();
-			activeEffect = i;
-			interrupts();
+			SerialPrintln("Button just pressed");	
 			break;
 		} else {
 			SerialPrintln("Button just released");
@@ -340,33 +338,39 @@ void updateEffectByButtons() {
 
 		// push button state has changed!
 		push_buttons[i] = newState;
-		if (newState == LOW) {
-			switchColors();
+		if (newState == LOW) { //button pressed
+		    switchToNextEffect();
 		}
 	}
 
 
-	//CHECK IF OVERRIDER IS UP
-//        if(buttons[OVERRIDER_PIN_INDEX] == LOW)
-//        {
-//          //Read the 3 sliders        
-//          noInterrupts();
-//          sliderA = analogRead(SLIDER_A_PIN);
-//          sliderB = analogRead(SLIDER_B_PIN);
-//          sliderC = analogRead(SLIDER_C_PIN);
-//          interrupts();
-//        }
+
+          sliderA = analogRead(SLIDER_A_PIN);
+          sliderB = analogRead(SLIDER_B_PIN);
+          sliderC = analogRead(SLIDER_C_PIN);
+
 }
 
-void switchColors() {
-//	SerialPrintln("Switching colors");
-//	uint32_t currentColor = colors[(currentColorIndex % COLORS_NUM)];
-//	currentColorIndex++;
-//	for (int i = 0; i < PARTS_NUM; i++) {
-//		pulseEffect[i]->setSourceColor(currentColor);
-//		heartBeatEffect[i]->setSourceColor(currentColor);
-//		colorWipeEffect[i]->setSourceColor(currentColor);
-//	}
+void switchToNextEffect() {
+  activeEffect++;
+  activeEffect = activeEffect % EFFECTS_NUM;
+  
+}
+
+void switchColorsGlobal() {
+	SerialPrintln("Switching colors");
+	uint32_t currentColor = colors[(currentColorIndex % COLORS_NUM)];
+	currentColorIndex++;
+	SabaleUtils::globalSourceColorValue = currentColor;
+        SabaleUtils::globalSourceColor = &SabaleUtils::globalSourceColorValue; //TODO: not sure if needed
+}
+
+void switchColorsHeart() {
+	SerialPrintln("Switching Heart colors");
+	uint32_t currentHeartColor = heartColors[(currentHeartColorIndex % COLORS_NUM)];
+	currentHeartColorIndex++;
+	SabaleUtils::heartSourceColorValue = currentHeartColor;
+        SabaleUtils::heartSourceColor = &SabaleUtils::heartSourceColorValue; //TODO: not sure if needed
 }
 
 //void loopSonars() {
