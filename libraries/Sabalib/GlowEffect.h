@@ -13,7 +13,9 @@ public:
 
 	void tick(void);
 private:
+	int direction;
 	int transitionStep;
+	int transitionStepBackwards;
 	uint32_t currentColorValue;
 	uint32_t *currentColor;
 	uint32_t currentIndex;

@@ -1,0 +1,57 @@
+<VisualMicro>
+  <Program Name="sabaled" Ext=".ino" Location="C:\Users\nimast\Documents\Arduino\sabaled">
+    <Platform Name="arduino10x" Package="arduino" Platform="avr" Architecture="avr">
+      <Board Name="mega2560" Description="Arduino Mega 2560 or Mega ADK" CoreFolder="C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino" VariantFullPath="C:\Program Files (x86)\Arduino\hardware\arduino\variants\mega" McuIdePath="C:\Program Files (x86)\Arduino" McuSketchBookPath="C:\Users\nimast\Documents\Arduino" name="Arduino Mega 2560 or Mega ADK" upload.protocol="wiring" upload.maximum_size="258048" upload.speed="115200" bootloader.low_fuses="0xFF" bootloader.high_fuses="0xD8" bootloader.extended_fuses="0xFD" bootloader.path="stk500v2" bootloader.file="stk500boot_v2_mega2560.hex" bootloader.unlock_bits="0x3F" bootloader.lock_bits="0x0F" build.mcu="atmega2560" build.f_cpu="16000000L" build.core="arduino" build.variant="mega" runtime.ide.path="C:\Program Files (x86)\Arduino" build.system.path="C:\Program Files (x86)\Arduino\hardware\arduino\system" runtime.ide.version="105" originalid="mega2560" vm.platform.root.path="C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\arduino10x" build.core.vmresolved="C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino" build.core.parentfolder.vmresolved="C:\Program Files (x86)\Arduino\hardware\arduino\cores" build.core.coresparentfolder.vmresolved="C:\Program Files (x86)\Arduino\hardware\arduino" vm.core.include="arduino.h" ide.hint="Arduino 0023 and 1.0.x Ide" ide.location.key="Arduino" ide.location.ide.winreg="Arduino 1.0.x Application" ide.location.sketchbook.winreg="Arduino 1.0.x Sketchbook" ide.location.sketchbook.preferences="sketchbook.path" ide.location.sketchbook.default="%MYDOCUMENTS%\arduino" ide.location.preferences="%VM_APPDATA_ROAMING%\arduino\preferences.txt" ide.default.package="arduino" ide.default.platform="avr" ide.multiplatform="true" ide.includes="arduino.h" ide.platformswithoutpackage="true" ide.includes.fallback="wprogram.h" ide.extension="ino" ide.extension.fallback="pde" ide.versionLTEQ="149" ide.exe="arduino.exe" ide.hosts="atmel" ide.url="http://arduino.cc/en/Main/Software" vm.debug="true" software="ARDUINO" ide.appid="arduino10x" location.sketchbook="C:\Users\nimast\Documents\Arduino" build.board="AVR_MEGA2560" vm.boardsource.path="C:\Program Files (x86)\Arduino\hardware\arduino" vm.platformname.name="avr" build.arch="AVR" build.variant.vmresolved="C:\Program Files (x86)\Arduino\hardware\arduino\variants\mega" vm.runtime.compiler.showwarnings="false" compiler.path="C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\" includes=" -I&quot;C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino&quot;  -I&quot;C:\Program Files (x86)\Arduino\hardware\arduino\variants\mega&quot;  -I&quot;C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers\VM_DBG&quot;  -I&quot;C:\Users\nimast\Documents\Arduino\libraries\Adafruit_NeoPixel&quot;  -I&quot;C:\Users\nimast\Documents\Arduino\libraries\Sabalib&quot;  -I&quot;C:\Program Files (x86)\Arduino\libraries&quot;  -I&quot;C:\Program Files (x86)\Arduino\hardware\arduino\libraries&quot;  -I&quot;C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers&quot;  -I&quot;C:\Users\nimast\Documents\Arduino\libraries&quot; " build.path="C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560" build.project_name="sabaled" build.variant.path="C:\Program Files (x86)\Arduino\hardware\arduino\variants\mega" archive_file="core.a" object_file="C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Sabalib\Sabalib.cpp.o" source_file="C:\Users\nimast\Documents\Arduino\libraries\Sabalib\Sabalib.cpp" build.architecture="avr" vmresolved.compiler.path="C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\" vmresolved.tools.path="C:\Program Files (x86)\Arduino\hardware\tools\avr" object_files="&quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\sabaled.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\VM_DBG\VM_mem_check.c.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\VM_DBG\VM_DBG.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Adafruit_NeoPixel\Adafruit_NeoPixel.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Sabalib\BaseEffect.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Sabalib\ColorPulseEffect.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Sabalib\ColorWipeEffect.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Sabalib\GlowEffect.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Sabalib\HeartBeatEffect.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Sabalib\PulseEffect.cpp.o&quot; &quot;C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560\Sabalib\Sabalib.cpp.o&quot; " />
+    </Platform>
+    <Compile IsCompiled="0" ConfigurationName="Debug" StopOnError="False" OptimiseLibs="True" OptimiseCore="True" BuildPath="C:\Users\nimast\AppData\Local\VMicro\Arduino\Builds\sabaled\mega2560" IsDebugStart="1" IncludesDebug="0" SketchName="sabaled" ReportDigitalPins="0" ReportAnalogPins="0" ReportI2C="0" ReportFreeMemory="0" IncludeDebug="1" LastDebugPreProcessorDefinitions="VM_DEBUG;VM_DEBUG_ENABLE 1;VM_DEBUG_BANDWIDTH_THROTTLE_MS 50;VM_DEBUGGER_TYPE_HARDWARESERIAL 0;VM_DEBUGGER_TYPE_SOFTWARESERIAL 1;VM_DEBUGGER_TYPE_FASTSERIAL 2;VM_DEBUGGER_TYPE_USB 3;VM_DEBUGGER_TYPE_TEENSY 4;VM_DEBUGGER_TYPE_UART 5;VM_DEBUGGER_TYPE_USART 6;VM_DEBUGGER_TYPE_USBSERIAL 7;VM_DEBUGGER_TYPE_TTYUART 8;VM_DEBUGGER_TYPE_NET_CONSOLE 9;VM_DEBUGGER_TYPE VM_DEBUGGER_TYPE_HARDWARESERIAL;" CompilerErrors="1" />
+    <Debug DebugEnabled="1" />
+    <VCCodeModel>
+      <VCCodeMacros />
+    </VCCodeModel>
+    <BreakPoints>
+      <BreakPoint Index="1" Name="sabaled.ino, line 320" Id="26e693e6-5a27-48df-96e8-e99db9effe67" Enabled="1" Message="{millis()}" MessageTextType="2" PreProcessedMessage="{0}" Condition="millis()&gt;0 || millis()&gt;1" ConditionType="1" CurrentHits="0" File="c:\users\nimast\documents\arduino\sabaled\sabaled.ino" FileLine="320" FileColumn="1" FunctionName="" FunctionLineOffset="1" FunctionColumnOffset="1" HitCountTarget="250" HitCountType="4" Language="C++" LocationType="3" Tag="&lt;vmbp Id='26e693e6-5a27-48df-96e8-e99db9effe67'/&gt;" Type="1" ToString="System.__ComObject" BreakWhenHit="1">
+        <Source>313			break;
+314		}
+315	}
+316	
+317	void updateEffectByButtons();
+318	void switchColors();
+319	
+--&gt;320	void loop() {
+321		updateEffectByButtons();
+322		tickActiveProgram();
+323		//loopSonars();
+324		//delay(1000);
+325	}
+326	
+327	
+328	/* Hack - Buttons pins should be ordinal */
+329	void updateEffectByButtons() {
+</Source>
+        <MessageVariables>
+          <MessageVariable Name="millis()" Index="1" />
+        </MessageVariables>
+      </BreakPoint>
+      <BreakPoint Index="2" Name="sabaled.ino, line 134" Id="86c31490-073f-4888-9fe7-58506f24dd7f" Enabled="1" Message="" MessageTextType="2" PreProcessedMessage="" Condition="" ConditionType="1" CurrentHits="0" File="c:\users\nimast\documents\arduino\sabaled\sabaled.ino" FileLine="134" FileColumn="1" FunctionName="" FunctionLineOffset="1" FunctionColumnOffset="1" HitCountTarget="1" HitCountType="1" Language="C++" LocationType="3" Tag="&lt;vmbp Id='86c31490-073f-4888-9fe7-58506f24dd7f'/&gt;" Type="1" ToString="System.__ComObject" BreakWhenHit="1">
+        <Source>127		if (DEBUGI) {
+128			Serial.println(str);
+129		}
+130	}
+131	
+132	void initColors() {
+133		colors[0] = Adafruit_NeoPixel::Color(255, 50, 0);
+--&gt;134		colors[1] = Adafruit_NeoPixel::Color(191, 0, 255);
+135		colors[2] = Adafruit_NeoPixel::Color(130, 60, 110);
+136		colors[3] = Adafruit_NeoPixel::Color(21, 70, 92);
+137	}
+138	
+139	//void initSonars(void) {
+140	//	// First ping starts at 75ms, gives time for the Arduino to chill before starting.
+141	//	pingTimer[0] = millis() + 75;
+142	//	for (uint8_t i = 1; i &lt; SONAR_NUM; i++) {// Set the starting time for each sensor.
+143	//		pingTimer[i] = pingTimer[i - 1] + PING_INTERVAL;
+</Source>
+      </BreakPoint>
+    </BreakPoints>
+  </Program>
+</VisualMicro>
