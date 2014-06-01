@@ -15,7 +15,7 @@
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 #define NUM_OF_STRIPS 6
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(213, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(150, PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(240, PIN2, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel strip3 = Adafruit_NeoPixel(60, PIN3, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel strip4 = Adafruit_NeoPixel(60, PIN4, NEO_GRB + NEO_KHZ800);
@@ -61,9 +61,16 @@ void loop() {
 // Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=1; i<strip.numPixels(); i++) {
+      if(i>80) {
       strip.setPixelColor(i, c);
       strip.show();
+      strip2.setPixelColor(i, c);
+      strip2.show();
+      strip3.setPixelColor(i, c);
+      strip2.show();
+      
       delay(wait);
+      }
   }
 
   
